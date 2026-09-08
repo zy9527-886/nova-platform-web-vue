@@ -1,0 +1,6 @@
+node_modules
+dist
+dist-ssr
+*.min.css
+*.min.scss
+

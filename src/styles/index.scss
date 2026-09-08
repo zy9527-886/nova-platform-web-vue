@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: 3px;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #999;
+  }
+}
+
+// 工具类
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mr-16 {
+  margin-right: 16px;
+}
+
+.ml-16 {
+  margin-left: 16px;
+}
+
+// 主题样式
+body {
+  transition: background-color 0.3s, color 0.3s;
+
+  // 亮色主题（默认）
+  &.theme-light {
+    background-color: #f0f2f5;
+    color: rgba(0, 0, 0, 0.85);
+
+    // 亮色主题下：侧边栏（菜单栏）也保持白色风格
+    .basic-layout {
+      .layout-sider {
+        background: #fff !important;
+        border-right: 1px solid #f0f0f0;
+
+        .logo {
+          background: #fff !important;
+          border-bottom: 1px solid #f0f0f0 !important;
+
+          .logo-text {
+            color: rgba(0, 0, 0, 0.85) !important;
+          }
+        }
+
+        .sider-footer {
+          background: #fff !important;
+          border-top: 1px solid #f0f0f0 !important;
+
+          .collapse-btn {
+            color: rgba(0, 0, 0, 0.65) !important;
+
+            &:hover {
+              color: rgba(0, 0, 0, 0.85) !important;
+              background: rgba(0, 0, 0, 0.04) !important;
+            }
+          }
+        }
+
+        // Ant Menu 亮色：背景/hover/选中样式
+        .ant-menu {
+          background: #fff !important;
+          color: rgba(0, 0, 0, 0.85);
+        }
+
+        .ant-menu-submenu-title:hover,
+        .ant-menu-item:hover {
+          background: rgba(0, 0, 0, 0.04) !important;
+        }
+
+        .ant-menu-item-selected {
+          background-color: #e6f4ff !important;
+          color: #1677ff !important;
+        }
+      }
+    }
+  }
+
+  // 暗色主题
+  &.theme-dark {
+    // 左黑右白：页面背景与内容区域保持亮色，侧边栏保持深色
+    background-color: #f0f2f5;
+    color: rgba(0, 0, 0, 0.85);
+
+    .basic-layout {
+      .layout-header {
+        background: #fff !important;
+      }
+
+      .layout-content {
+        background: #f0f2f5 !important;
+      }
+
+      // 左侧边栏保持深色（菜单栏黑色）
+      .layout-sider {
+        background: #001529 !important;
+
+        .logo {
+          background: #001529 !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+          .logo-text {
+            color: #fff !important;
+          }
+        }
+
+        .sider-footer {
+          background: #001529 !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+      }
+    }
+  }
+
+}
+
