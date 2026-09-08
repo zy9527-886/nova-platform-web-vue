@@ -109,6 +109,8 @@ export default {
     remark: '備註',
     addUser: '新增使用者',
     editUser: '編輯使用者',
+    detail: '詳情',
+    detailUser: '使用者詳情',
     avatarPlaceholder: '頭像 URL 或圖示標識',
     idTypePlaceholder: '例如：1',
     loadFailed: '取得使用者列表失敗',

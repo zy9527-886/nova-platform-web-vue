@@ -109,6 +109,8 @@ export default {
     remark: '备注',
     addUser: '新增用户',
     editUser: '编辑用户',
+    detail: '详情',
+    detailUser: '用户详情',
     avatarPlaceholder: '头像 URL 或图标标识',
     idTypePlaceholder: '例如：1',
     loadFailed: '获取用户列表失败',

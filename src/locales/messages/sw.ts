@@ -109,6 +109,8 @@ export default {
     remark: 'Maelezo',
     addUser: 'Ongeza mtumiaji',
     editUser: 'Hariri mtumiaji',
+    detail: 'Maelezo',
+    detailUser: 'Maelezo ya mtumiaji',
     avatarPlaceholder: 'URL ya picha au jina la ikoni',
     idTypePlaceholder: 'Mfano: 1',
     loadFailed: 'Imeshindwa kupakia watumiaji',

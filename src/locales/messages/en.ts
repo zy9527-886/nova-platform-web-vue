@@ -109,6 +109,8 @@ export default {
     remark: 'Remarks',
     addUser: 'Add user',
     editUser: 'Edit user',
+    detail: 'Details',
+    detailUser: 'User details',
     avatarPlaceholder: 'Avatar URL or icon name',
     idTypePlaceholder: 'Example: 1',
     loadFailed: 'Failed to load users',

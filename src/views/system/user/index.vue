@@ -111,6 +111,17 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <a-space>
+              <a-tooltip :title="t('user.detail')">
+                <a-button
+                  type="text"
+                  size="small"
+                  shape="circle"
+                  :aria-label="t('user.detail')"
+                  @click="handleDetail(record)"
+                >
+                  <EyeTwoTone :two-tone-color="primaryColor" />
+                </a-button>
+              </a-tooltip>
               <a-tooltip :title="t('common.edit')">
                 <a-button
                   type="text"
@@ -139,7 +150,12 @@
       </a-table>
     </a-card>
 
-    <UserModal v-model:open="modalOpen" :record="currentRecord" @success="handleSuccess" />
+    <UserModal
+      v-model:open="modalOpen"
+      :record="currentRecord"
+      :readonly="detailMode"
+      @success="handleSuccess"
+    />
   </div>
 </template>
 
@@ -148,6 +164,7 @@ import { computed, onMounted, reactive, ref, h } from 'vue'
 import {
   DeleteTwoTone,
   EditTwoTone,
+  EyeTwoTone,
   PlusCircleTwoTone,
   ReloadOutlined,
   SearchOutlined,
@@ -171,6 +188,7 @@ const loading = ref(false)
 const dataSource = ref<SysUser[]>([])
 const selectedRowKeys = ref<string[]>([])
 const modalOpen = ref(false)
+const detailMode = ref(false)
 const currentRecord = ref<SysUser | null>(null)
 const rolesLoading = ref(false)
 const roleOptions = ref<{ label: string; value: string }[]>([])
@@ -205,7 +223,7 @@ const columns = computed(() => [
   { title: t('user.role'), key: 'roles', width: 220 },
   { title: t('user.status'), key: 'stus', width: 90 },
   { title: t('user.createdAt'), dataIndex: 'creTm', key: 'creTm', width: 180 },
-  { title: t('user.actions'), key: 'action', width: 90, fixed: 'right' as const },
+  { title: t('user.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
 
 const rowSelection = computed(() => ({
@@ -264,18 +282,23 @@ const handleTableChange = (page: { current?: number; pageSize?: number }) => {
 }
 
 const handleAdd = () => {
+  detailMode.value = false
   currentRecord.value = null
   modalOpen.value = true
 }
 
-const handleEdit = async (record: SysUser) => {
+const openExistingUser = async (record: SysUser, readonly: boolean) => {
   try {
     currentRecord.value = (await getUser(record.userId)).data
+    detailMode.value = readonly
     modalOpen.value = true
   } catch (error: any) {
     message.error(error?.message || t('user.detailFailed'))
   }
 }
+
+const handleDetail = (record: SysUser) => openExistingUser(record, true)
+const handleEdit = (record: SysUser) => openExistingUser(record, false)
 
 const handleDelete = (record: SysUser) => {
   Modal.confirm({

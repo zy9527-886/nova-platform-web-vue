@@ -1,12 +1,12 @@
 <template>
   <a-modal
     :open="open"
-    :title="record ? t('user.editUser') : t('user.addUser')"
+    :title="readonly ? t('user.detailUser') : record ? t('user.editUser') : t('user.addUser')"
     :confirm-loading="loading"
     width="720px"
     destroy-on-close
     @cancel="emit('update:open', false)"
-    @ok="handleSubmit"
+    @ok="handleOk"
   >
     <a-form
 ref="formRef"
@@ -15,22 +15,27 @@ ref="formRef"
 :label-col="{ span: 6 }"
 :wrapper-col="{ span: 18 }">
       <a-form-item :label="t('user.username')" name="userNm">
-        <a-input v-model:value="formData.userNm" maxlength="64" />
+        <a-input v-model:value="formData.userNm" maxlength="64" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.realName')" name="realNm">
-        <a-input v-model:value="formData.realNm" maxlength="64" />
+        <a-input v-model:value="formData.realNm" maxlength="64" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.idType')" name="idTyp">
-        <a-input v-model:value="formData.idTyp" maxlength="2" :placeholder="t('user.idTypePlaceholder')" />
+        <a-input
+          v-model:value="formData.idTyp"
+          maxlength="2"
+          :placeholder="t('user.idTypePlaceholder')"
+          :readonly="readonly"
+        />
       </a-form-item>
       <a-form-item :label="t('user.idNo')" name="idNo">
-        <a-input v-model:value="formData.idNo" maxlength="32" />
+        <a-input v-model:value="formData.idNo" maxlength="32" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.phone')" name="tel">
-        <a-input v-model:value="formData.tel" maxlength="16" />
+        <a-input v-model:value="formData.tel" maxlength="16" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.organization')" name="orgCd">
-        <a-input v-model:value="formData.orgCd" maxlength="32" />
+        <a-input v-model:value="formData.orgCd" maxlength="32" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.role')" name="roleIds">
         <a-select
@@ -40,22 +45,28 @@ ref="formRef"
           :loading="rolesLoading"
           :placeholder="t('user.selectRole')"
           allow-clear
+          :disabled="readonly"
         />
       </a-form-item>
       <a-form-item :label="t('user.status')" name="stus">
-        <a-radio-group v-model:value="formData.stus">
+        <a-radio-group v-model:value="formData.stus" :disabled="readonly">
           <a-radio value="1">{{ t('common.enabled') }}</a-radio>
           <a-radio value="0">{{ t('common.disabled') }}</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item :label="t('user.avatar')" name="icon">
-        <a-input v-model:value="formData.icon" :placeholder="t('user.avatarPlaceholder')" />
+        <a-input
+          v-model:value="formData.icon"
+          :placeholder="t('user.avatarPlaceholder')"
+          :readonly="readonly"
+        />
       </a-form-item>
       <a-form-item :label="t('user.remark')" name="rmk">
         <a-textarea
 v-model:value="formData.rmk"
 :rows="3"
 maxlength="255"
+          :readonly="readonly"
 show-count />
       </a-form-item>
     </a-form>
@@ -73,7 +84,11 @@ import { toUserRoleList } from '@/views/system/shared/data'
 
 const { t } = useI18n()
 
-const props = defineProps<{ open: boolean; record: SysUser | null }>()
+const props = withDefaults(
+  defineProps<{ open: boolean; record: SysUser | null; readonly?: boolean }>(),
+  { readonly: false },
+)
+const readonly = computed(() => props.readonly)
 const emit = defineEmits<{
   (event: 'update:open', value: boolean): void
   (event: 'success'): void
@@ -160,5 +175,13 @@ const handleSubmit = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleOk = () => {
+  if (props.readonly) {
+    emit('update:open', false)
+    return
+  }
+  handleSubmit()
 }
 </script>
