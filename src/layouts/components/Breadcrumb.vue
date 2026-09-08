@@ -9,13 +9,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const breadcrumbList = computed(() => {
-  const matched = route.matched.filter((item) => item.meta && item.meta.title)
+  const matched = route.matched.filter((item) => item.meta && (item.meta.titleKey || item.meta.title))
   return matched.map((item) => ({
-    title: item.meta?.title as string,
+    title: typeof item.meta.titleKey === 'string' ? t(item.meta.titleKey) : item.meta.title as string,
     path: item.path,
   }))
 })

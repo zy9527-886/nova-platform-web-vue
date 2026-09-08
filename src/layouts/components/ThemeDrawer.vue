@@ -9,8 +9,8 @@
   >
     <div class="theme-drawer">
       <div class="theme-section">
-        <div class="section-title">整体风格设置（侧边栏）</div>
-        <div class="section-desc">仅影响左侧菜单区域：亮色 / 暗色</div>
+        <div class="section-title">{{ t('layout.sidebarStyle') }}</div>
+        <div class="section-desc">{{ t('layout.sidebarStyleDesc') }}</div>
         <div class="theme-options">
           <div
             v-for="themeOption in themeOptions"
@@ -45,14 +45,26 @@
           </div>
         </div>
       </div>
+      <div class="theme-section">
+        <div class="section-title">{{ t('layout.language') }}</div>
+        <div class="section-desc">{{ t('layout.languageDesc') }}</div>
+        <a-select
+          :value="currentLocale"
+          :options="localeOptions"
+          style="width: 100%"
+          @change="handleLocaleChange"
+        />
+      </div>
     </div>
   </a-drawer>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { CheckCircleOutlined } from '@ant-design/icons-vue'
 import { useAppStore } from '@/stores/app'
+import type { AppLocale } from '@/locales/types'
 
 interface Props {
   open: boolean
@@ -66,16 +78,27 @@ defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const appStore = useAppStore()
+const { t } = useI18n()
 const currentTheme = computed(() => appStore.theme)
+const currentLocale = computed(() => appStore.locale)
 
-const themeOptions: { label: string; value: 'light' | 'dark' }[] = [
-  { label: '亮色', value: 'light' },
-  { label: '暗色', value: 'dark' },
-]
+const themeOptions = computed<{ label: string; value: 'light' | 'dark' }[]>(() => [
+  { label: t('layout.light'), value: 'light' },
+  { label: t('layout.dark'), value: 'dark' },
+])
+
+const localeOptions = computed(() => [
+  { label: t('locale.zhCN'), value: 'zh-CN' },
+  { label: t('locale.zhTW'), value: 'zh-TW' },
+  { label: t('locale.en'), value: 'en' },
+  { label: t('locale.sw'), value: 'sw' },
+])
 
 const handleThemeChange = (theme: 'light' | 'dark') => {
   appStore.setTheme(theme)
 }
+
+const handleLocaleChange = (locale: AppLocale) => appStore.setLocale(locale)
 
 const handleClose = () => {
   emit('update:open', false)

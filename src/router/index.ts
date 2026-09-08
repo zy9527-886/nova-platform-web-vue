@@ -15,6 +15,7 @@ const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/login/index.vue'),
     meta: {
       title: '登录',
+      titleKey: 'route.login',
       hidden: true,
     },
   },
@@ -24,6 +25,7 @@ const constantRoutes: RouteRecordRaw[] = [
     redirect: '/dashboard',
     meta: {
       title: '首页',
+      titleKey: 'route.home',
       hidden: false,
       icon: 'HomeOutlined',
     },
@@ -34,6 +36,7 @@ const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/dashboard/index.vue'),
         meta: {
           title: '工作台',
+          titleKey: 'route.dashboard',
           icon: 'DashboardOutlined',
         },
       },
@@ -44,6 +47,7 @@ const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/layouts/BasicLayout.vue'),
     meta: {
       title: '系统管理',
+      titleKey: 'route.system',
       icon: 'SettingOutlined',
     },
     children: [
@@ -53,6 +57,7 @@ const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/system/user/index.vue'),
         meta: {
           title: '用户管理',
+          titleKey: 'route.user',
           icon: 'UserOutlined',
         },
       },
@@ -62,6 +67,7 @@ const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/system/role/index.vue'),
         meta: {
           title: '角色管理',
+          titleKey: 'route.role',
           icon: 'TeamOutlined',
         },
       },
@@ -71,6 +77,7 @@ const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/system/menu/index.vue'),
         meta: {
           title: '菜单管理',
+          titleKey: 'route.menu',
           icon: 'MenuOutlined',
         },
       },
@@ -81,6 +88,7 @@ const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/layouts/BasicLayout.vue'),
     meta: {
       title: '个人设置',
+      titleKey: 'route.settings',
       icon: 'UserOutlined',
       hidden: true,
     },
@@ -91,6 +99,7 @@ const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/settings/index.vue'),
         meta: {
           title: '个人设置',
+          titleKey: 'route.settings',
         },
       },
     ],
@@ -101,6 +110,7 @@ const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/layouts/BasicLayout.vue'),
     meta: {
       title: '重定向',
+      titleKey: 'route.redirect',
       hidden: true,
     },
     children: [
@@ -125,6 +135,7 @@ const constantRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/error/404.vue'),
     meta: {
       title: '404',
+      titleKey: 'route.notFound',
       hidden: true,
     },
   },
@@ -167,6 +178,7 @@ router.beforeEach((to, _from, next) => {
     appStore.addTab({
       path: to.path,
       title: to.meta.title as string,
+      titleKey: to.meta.titleKey as string | undefined,
       closable: to.path !== '/dashboard',
     })
   }

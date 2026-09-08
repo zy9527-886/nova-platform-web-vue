@@ -12,6 +12,7 @@ export default {
     styleSettings: 'Appearance settings', sidebarStyle: 'Sidebar appearance', sidebarStyleDesc: 'Changes the sidebar only: light or dark',
     light: 'Light', dark: 'Dark', language: 'Interface language', languageDesc: 'Changes apply immediately and are saved automatically',
     fullscreen: 'Full screen', exitFullscreen: 'Exit full screen', personalSettings: 'Personal settings', logout: 'Sign out',
+    administrator: 'Administrator',
     closeOthers: 'Close others', closeLeft: 'Close tabs to the left', closeRight: 'Close tabs to the right',
   },
   locale: { zhCN: '简体中文', zhTW: '繁體中文', en: 'English', sw: 'Kiswahili' },

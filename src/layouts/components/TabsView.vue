@@ -11,7 +11,7 @@
       <a-tab-pane v-for="tab in tabsList" :key="tab.path" :closable="tab.closable">
         <template #tab>
           <span class="tab-label">
-            <span v-text="tab.title"></span>
+            <span>{{ getTabTitle(tab) }}</span>
             <ReloadOutlined
               v-if="tab.path === activeKey"
               :class="['tab-refresh-icon', { 'is-rotating': refreshingPath === tab.path }]"
@@ -36,14 +36,14 @@
       ></div>
       <template #overlay>
         <a-menu @click="handleMenuClick($event, contextMenuTabPath)">
-          <a-menu-item key="closeOthers" :disabled="tabsList.length <= 1"> 关闭其他 </a-menu-item>
+          <a-menu-item key="closeOthers" :disabled="tabsList.length <= 1">{{ t('layout.closeOthers') }}</a-menu-item>
           <a-menu-item key="closeLeft" :disabled="isFirstTab(contextMenuTabPath) || tabsList.length <= 1">
-            关闭到左侧
+            {{ t('layout.closeLeft') }}
           </a-menu-item>
           <a-menu-item key="closeRight" :disabled="isLastTab(contextMenuTabPath) || tabsList.length <= 1">
-            关闭到右侧
+            {{ t('layout.closeRight') }}
           </a-menu-item>
-          <a-menu-item key="refresh">刷新当前页</a-menu-item>
+          <a-menu-item key="refresh">{{ t('common.refresh') }}</a-menu-item>
         </a-menu>
       </template>
     </a-dropdown>
@@ -53,12 +53,14 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ReloadOutlined } from '@ant-design/icons-vue'
 import { useAppStore } from '@/stores/app'
 
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const { t } = useI18n()
 
 const tabsList = computed(() => appStore.tabsList)
 const activeKey = ref(route.path)
@@ -68,6 +70,8 @@ const dropdownOpen = ref(false)
 const contextMenuTabPath = ref('')
 const contextMenuPosition = ref({ x: 0, y: 0 })
 const refreshingPath = ref('')
+
+const getTabTitle = (tab: { title?: string; titleKey?: string }) => tab.titleKey ? t(tab.titleKey) : tab.title || ''
 
 watch(
   () => route.path,
@@ -89,8 +93,8 @@ const handleContextMenu = (e: MouseEvent) => {
   e.stopPropagation()
 
   // 找到对应的 tab path - 通过 data 属性或文本内容
-  const tabTitle = tabElement.querySelector('.ant-tabs-tab-btn')?.textContent?.trim()
-  const tab = tabsList.value.find(t => t.title === tabTitle)
+  const renderedTitle = tabElement.querySelector('.ant-tabs-tab-btn')?.textContent?.trim()
+  const tab = tabsList.value.find(tab => getTabTitle(tab) === renderedTitle)
   if (!tab) {
     dropdownOpen.value = false
     return

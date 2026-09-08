@@ -6,6 +6,7 @@ import zhCN from '../src/locales/messages/zh-CN.ts'
 import zhTW from '../src/locales/messages/zh-TW.ts'
 import en from '../src/locales/messages/en.ts'
 import sw from '../src/locales/messages/sw.ts'
+import { resolveTitleKey } from '../src/router/title.ts'
 
 const messageKeys = (value: Record<string, unknown>, prefix = ''): string[] =>
   Object.entries(value).flatMap(([key, child]) => {
@@ -36,4 +37,9 @@ test('maps application locales to Ant Design and Day.js locales', () => {
   assert.equal(getDayjsLocale('zh-TW'), 'zh-tw')
   assert.equal(getDayjsLocale('en'), 'en')
   assert.equal(getDayjsLocale('sw'), 'sw')
+})
+
+test('route titles prefer translation keys and preserve legacy fallback', () => {
+  assert.equal(resolveTitleKey({ titleKey: 'route.user', title: '用户管理' }), 'route.user')
+  assert.equal(resolveTitleKey({ title: '旧页签' }), undefined)
 })

@@ -15,13 +15,13 @@
           <template #icon>
             <component :is="getIcon(item.meta?.icon)" v-if="item.meta?.icon" />
           </template>
-          <template #title>{{ item.meta?.title || item.name }}</template>
+          <template #title>{{ routeTitle(item) }}</template>
           <template v-for="child in getValidChildren(item)" :key="child.fullPath || child.path">
             <a-menu-item v-if="shouldShowRoute(child)" :key="child.fullPath || child.path">
               <template #icon>
                 <component :is="getIcon(child.meta?.icon)" v-if="child.meta?.icon" />
               </template>
-              <span>{{ child.meta?.title || child.name }}</span>
+              <span>{{ routeTitle(child) }}</span>
             </a-menu-item>
           </template>
         </a-sub-menu>
@@ -29,7 +29,7 @@
           <template #icon>
             <component :is="getIcon(item.meta?.icon)" v-if="item.meta?.icon" />
           </template>
-          {{ item.meta?.title || item.name }}
+          {{ routeTitle(item) }}
         </a-menu-item>
       </template>
     </template>
@@ -45,11 +45,13 @@ import {
   type RouteLocationMatched,
 } from 'vue-router'
 import * as Icons from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
 
 const currentRoute = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const { t } = useI18n()
 
 // 扩展一 个 fullPath 字段，方便菜单使用
 interface AppRoute extends RouteRecordNormalized {
@@ -136,6 +138,11 @@ const iconsMap = Icons as Record<string, Component>
 const getIcon = (iconName?: unknown): Component | null => {
   if (typeof iconName !== 'string' || !iconName) return null
   return iconsMap[iconName] || null
+}
+
+const routeTitle = (route: AppRoute) => {
+  const titleKey = route.meta?.titleKey
+  return typeof titleKey === 'string' ? t(titleKey) : route.meta?.title || route.name
 }
 
 // 菜单点击

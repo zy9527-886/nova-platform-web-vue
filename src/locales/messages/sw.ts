@@ -12,6 +12,7 @@ export default {
     styleSettings: 'Mipangilio ya mwonekano', sidebarStyle: 'Mwonekano wa utepe wa pembeni', sidebarStyleDesc: 'Hubadilisha utepe wa kushoto pekee: angavu au giza',
     light: 'Angavu', dark: 'Giza', language: 'Lugha ya kiolesura', languageDesc: 'Mabadiliko yanatumika mara moja na kuhifadhiwa',
     fullscreen: 'Skrini nzima', exitFullscreen: 'Ondoka skrini nzima', personalSettings: 'Mipangilio binafsi', logout: 'Ondoka',
+    administrator: 'Msimamizi',
     closeOthers: 'Funga nyingine', closeLeft: 'Funga vichupo vya kushoto', closeRight: 'Funga vichupo vya kulia',
   },
   locale: { zhCN: '简体中文', zhTW: '繁體中文', en: 'English', sw: 'Kiswahili' },

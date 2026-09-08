@@ -12,13 +12,20 @@ import { getDayjsLocale, normalizeLocale, type AppLocale } from '@/locales/types
 const TABS_KEY = 'app_tabs_list'
 const LOCALE_KEY = 'app_locale'
 
+interface AppTab {
+  path: string
+  title?: string
+  titleKey?: string
+  closable?: boolean
+}
+
 export const useAppStore = defineStore('app', () => {
   // 侧边栏折叠状态
   const collapsed = ref<boolean>(false)
 
   // 多标签页数据 - 从本地存储恢复
-  const savedTabs = Storage.get<Array<{ path: string; title: string; closable?: boolean }>>(TABS_KEY)
-  const tabsList = ref<Array<{ path: string; title: string; closable?: boolean }>>(savedTabs || [])
+  const savedTabs = Storage.get<AppTab[]>(TABS_KEY)
+  const tabsList = ref<AppTab[]>(savedTabs || [])
 
   // 监听 tabsList 变化，自动持久化
   watch(
@@ -64,7 +71,7 @@ export const useAppStore = defineStore('app', () => {
   }
 
   // 添加标签页
-  const addTab = (tab: { path: string; title: string; closable?: boolean }) => {
+  const addTab = (tab: AppTab) => {
     const exists = tabsList.value.find(item => item.path === tab.path)
     if (!exists) {
       tabsList.value.push(tab)

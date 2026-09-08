@@ -35,14 +35,14 @@
         <div class="header-right">
           <a-space :size="8">
             <!-- 设置 -->
-            <a-tooltip title="整体风格设置">
+            <a-tooltip :title="t('layout.styleSettings')">
               <div class="header-action" @click="showThemeDrawer">
                 <SettingOutlined />
               </div>
             </a-tooltip>
 
             <!-- 全屏 -->
-            <a-tooltip :title="isFullscreen ? '退出全屏' : '全屏'">
+            <a-tooltip :title="isFullscreen ? t('layout.exitFullscreen') : t('layout.fullscreen')">
               <div class="header-action" @click="toggleFullscreen">
                 <FullscreenOutlined v-if="!isFullscreen" />
                 <FullscreenExitOutlined v-else />
@@ -55,18 +55,18 @@
                 <a-avatar :size="32" :src="userInfo?.avatar" class="user-avatar">
                   <template #icon><UserOutlined /></template>
                 </a-avatar>
-                <span class="username">{{ userInfo?.nickname || userInfo?.username || '管理员' }}</span>
+                <span class="username">{{ userInfo?.nickname || userInfo?.username || t('layout.administrator') }}</span>
               </div>
               <template #overlay>
                 <a-menu>
                   <a-menu-item key="settings" @click="handleSettings">
                     <SettingOutlined />
-                    <span>个人设置</span>
+                    <span>{{ t('layout.personalSettings') }}</span>
                   </a-menu-item>
                   <a-menu-divider />
                   <a-menu-item key="logout" @click="handleLogout">
                     <LogoutOutlined />
-                    <span>退出登录</span>
+                    <span>{{ t('layout.logout') }}</span>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -99,6 +99,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -118,6 +119,7 @@ import ThemeDrawer from './components/ThemeDrawer.vue'
 const appStore = useAppStore()
 const userStore = useUserStore()
 const router = useRouter()
+const { t } = useI18n()
 
 const siderTheme = computed(() => (appStore.theme === 'light' ? 'light' : 'dark'))
 

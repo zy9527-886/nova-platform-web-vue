@@ -12,6 +12,7 @@ export default {
     styleSettings: '整体风格设置', sidebarStyle: '整体风格设置（侧边栏）', sidebarStyleDesc: '仅影响左侧菜单区域：亮色 / 暗色',
     light: '亮色', dark: '暗色', language: '界面语言', languageDesc: '切换后立即应用并自动保存',
     fullscreen: '全屏', exitFullscreen: '退出全屏', personalSettings: '个人设置', logout: '退出登录',
+    administrator: '管理员',
     closeOthers: '关闭其他', closeLeft: '关闭到左侧', closeRight: '关闭到右侧',
   },
   locale: { zhCN: '简体中文', zhTW: '繁體中文', en: 'English', sw: 'Kiswahili' },
