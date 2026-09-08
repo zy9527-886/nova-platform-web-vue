@@ -1,5 +1,5 @@
 import type { SysMenu } from '@/api/menu'
-import type { SysUserRole } from '@/api/system/user'
+import type { SysUserQuery, SysUserRole } from '@/api/system/user'
 
 export const buildMenuTree = (rows: SysMenu[]): SysMenu[] => {
   const nodes = new Map<string, SysMenu>()
@@ -45,3 +45,21 @@ export const pageAfterDelete = (current: number, currentRowCount: number, delete
 
 export const toUserRoleList = (roleIds: string[]): SysUserRole[] =>
   [...new Set(roleIds.filter(Boolean))].map((rolId) => ({ rolId }))
+
+export interface UserSearchFilters {
+  userNm: string
+  idNo: string
+  realNm: string
+  tel: string
+  stus?: string
+  roleId?: string
+}
+
+export const buildUserQuery = (filters: UserSearchFilters): SysUserQuery => ({
+  userNm: filters.userNm || undefined,
+  idNo: filters.idNo || undefined,
+  realNm: filters.realNm || undefined,
+  tel: filters.tel || undefined,
+  stus: filters.stus,
+  userRolList: filters.roleId ? toUserRoleList([filters.roleId]) : undefined,
+})

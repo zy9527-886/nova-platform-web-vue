@@ -1,10 +1,10 @@
 <template>
-  <a-card :bordered="false" title="菜单管理">
+  <a-card :bordered="false" :title="t('route.menu')">
     <template #extra>
       <a-space>
-        <a-button @click="expandedRowKeys = allParentIds">展开全部</a-button>
-        <a-button @click="expandedRowKeys = []">收起全部</a-button>
-        <a-button type="primary" @click="handleAdd()"><PlusOutlined />新增菜单</a-button>
+        <a-button @click="expandedRowKeys = allParentIds">{{ t('menu.expandAll') }}</a-button>
+        <a-button @click="expandedRowKeys = []">{{ t('menu.collapseAll') }}</a-button>
+        <a-button type="primary" @click="handleAdd()"><PlusOutlined />{{ t('menu.addMenu') }}</a-button>
       </a-space>
     </template>
 
@@ -16,7 +16,7 @@
       :pagination="false"
       :expanded-row-keys="expandedRowKeys"
       :scroll="{ x: 1100 }"
-      @expandedRowsChange="(keys: (string | number)[]) => (expandedRowKeys = keys.map(String))"
+      @expanded-rows-change="(keys: (string | number)[]) => (expandedRowKeys = keys.map(String))"
     >
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'icon'">
@@ -24,16 +24,30 @@
           <span v-else>-</span>
         </template>
         <template v-else-if="column.key === 'typ'">
-          <a-tag :color="record.typ === '0' ? 'orange' : 'blue'">{{ record.typ === '0' ? '按钮' : '菜单' }}</a-tag>
+          <a-tag :color="record.typ === '0' ? 'orange' : 'blue'">{{
+            record.typ === '0' ? t('menu.button') : t('menu.menu')
+          }}</a-tag>
         </template>
         <template v-else-if="column.key === 'isDsp'">
-          <a-tag :color="record.isDsp === 1 ? 'green' : 'default'">{{ record.isDsp === 1 ? '显示' : '隐藏' }}</a-tag>
+          <a-tag :color="record.isDsp === 1 ? 'green' : 'default'">{{
+            record.isDsp === 1 ? t('common.show') : t('common.hide')
+          }}</a-tag>
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space>
-            <a-button v-if="record.typ === '1'" type="link" size="small" @click="handleAdd(record)">新增子项</a-button>
-            <a-button type="link" size="small" @click="handleEdit(record)">编辑</a-button>
-            <a-button type="link" size="small" danger @click="handleDelete(record)">删除</a-button>
+            <a-button
+v-if="record.typ === '1'"
+type="link"
+size="small"
+@click="handleAdd(record)">{{
+              t('menu.addChild')
+            }}</a-button>
+            <a-button type="link" size="small" @click="handleEdit(record)">{{ t('common.edit') }}</a-button>
+            <a-button
+type="link"
+size="small"
+danger
+@click="handleDelete(record)">{{ t('common.delete') }}</a-button>
           </a-space>
         </template>
       </template>
@@ -41,29 +55,76 @@
 
     <a-modal
       v-model:open="modalOpen"
-      :title="editingId ? '编辑菜单' : '新增菜单'"
+      :title="editingId ? t('menu.editMenu') : t('menu.addMenu')"
       :confirm-loading="saving"
       width="680px"
       destroy-on-close
       @ok="handleSave"
     >
-      <a-form ref="formRef" :model="formData" :rules="rules" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
-        <a-form-item label="菜单名称" name="menuNm"><a-input v-model:value="formData.menuNm" maxlength="64" /></a-form-item>
-        <a-form-item label="类型" name="typ">
+      <a-form
+ref="formRef"
+:model="formData"
+:rules="rules"
+:label-col="{ span: 6 }"
+:wrapper-col="{ span: 18 }">
+        <a-form-item
+:label="t('menu.name')"
+name="menuNm"
+          ><a-input
+v-model:value="formData.menuNm"
+maxlength="64"
+        /></a-form-item>
+        <a-form-item :label="t('menu.type')" name="typ">
           <a-radio-group v-model:value="formData.typ">
-            <a-radio-button value="1">菜单</a-radio-button>
-            <a-radio-button value="0">按钮</a-radio-button>
+            <a-radio-button value="1">{{ t('menu.menu') }}</a-radio-button>
+            <a-radio-button value="0">{{ t('menu.button') }}</a-radio-button>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="上级菜单" name="prentId">
-          <a-select v-model:value="formData.prentId" :options="parentOptions" show-search option-filter-prop="label" />
+        <a-form-item :label="t('menu.parent')" name="prentId">
+          <a-select
+v-model:value="formData.prentId"
+:options="parentOptions"
+show-search
+option-filter-prop="label" />
         </a-form-item>
-        <a-form-item label="路径" name="path"><a-input v-model:value="formData.path" maxlength="128" /></a-form-item>
-        <a-form-item label="权限码" name="permCd"><a-input v-model:value="formData.permCd" maxlength="32" /></a-form-item>
-        <a-form-item label="菜单来源" name="menuSource"><a-input v-model:value="formData.menuSource" maxlength="30" /></a-form-item>
-        <a-form-item label="图标" name="icon"><IconPicker v-model:value="formData.icon" /></a-form-item>
-        <a-form-item label="排序" name="sort"><a-input-number v-model:value="formData.sort" :min="0" style="width: 100%" /></a-form-item>
-        <a-form-item label="是否显示" name="isDsp"><a-switch v-model:checked="displayed" checked-children="显示" un-checked-children="隐藏" /></a-form-item>
+        <a-form-item
+:label="t('menu.path')"
+name="path"
+          ><a-input
+v-model:value="formData.path"
+maxlength="128"
+        /></a-form-item>
+        <a-form-item
+:label="t('menu.permissionCode')"
+name="permCd"
+          ><a-input
+v-model:value="formData.permCd"
+maxlength="32"
+        /></a-form-item>
+        <a-form-item
+:label="t('menu.source')"
+name="menuSource"
+          ><a-input
+v-model:value="formData.menuSource"
+maxlength="30"
+        /></a-form-item>
+        <a-form-item :label="t('menu.icon')" name="icon"><IconPicker v-model:value="formData.icon" /></a-form-item>
+        <a-form-item
+:label="t('menu.sort')"
+name="sort"
+          ><a-input-number
+v-model:value="formData.sort"
+:min="0"
+style="width: 100%"
+        /></a-form-item>
+        <a-form-item
+:label="t('menu.display')"
+name="isDsp"
+          ><a-switch
+            v-model:checked="displayed"
+            :checked-children="t('common.show')"
+            :un-checked-children="t('common.hide')"
+        /></a-form-item>
       </a-form>
     </a-modal>
   </a-card>
@@ -74,10 +135,13 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { MenuOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import * as Icons from '@ant-design/icons-vue'
 import { message, Modal, type FormInstance } from 'ant-design-vue'
+import { useI18n } from 'vue-i18n'
 
 import { getMenu, listMenus, removeMenu, saveMenu, type SysMenu } from '@/api/menu'
 import IconPicker from '@/components/IconPicker/index.vue'
 import { buildMenuTree, collectDescendantIds } from '@/views/system/shared/data'
+
+const { t } = useI18n()
 
 const loading = ref(false)
 const saving = ref(false)
@@ -103,32 +167,32 @@ const displayed = computed({
   get: () => formData.isDsp === 1,
   set: (value: boolean) => (formData.isDsp = value ? 1 : 0),
 })
-const rules = {
-  menuNm: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-  typ: [{ required: true, message: '请选择类型' }],
-  prentId: [{ required: true, message: '请选择上级菜单' }],
-  sort: [{ required: true, message: '请输入排序' }],
-}
-const columns = [
-  { title: '菜单名称', dataIndex: 'menuNm', key: 'menuNm', width: 220 },
-  { title: '图标', key: 'icon', width: 70 },
-  { title: '类型', key: 'typ', width: 80 },
-  { title: '路径', dataIndex: 'path', key: 'path', width: 220 },
-  { title: '权限码', dataIndex: 'permCd', key: 'permCd', width: 200 },
-  { title: '排序', dataIndex: 'sort', key: 'sort', width: 80 },
-  { title: '显示', key: 'isDsp', width: 80 },
-  { title: '操作', key: 'action', width: 220, fixed: 'right' as const },
-]
+const rules = computed(() => ({
+  menuNm: [{ required: true, message: t('common.input', { label: t('menu.name') }), trigger: 'blur' }],
+  typ: [{ required: true, message: t('common.select', { label: t('menu.type') }) }],
+  prentId: [{ required: true, message: t('common.select', { label: t('menu.parent') }) }],
+  sort: [{ required: true, message: t('common.input', { label: t('menu.sort') }) }],
+}))
+const columns = computed(() => [
+  { title: t('menu.name'), dataIndex: 'menuNm', key: 'menuNm', width: 220 },
+  { title: t('menu.icon'), key: 'icon', width: 70 },
+  { title: t('menu.type'), key: 'typ', width: 80 },
+  { title: t('menu.path'), dataIndex: 'path', key: 'path', width: 220 },
+  { title: t('menu.permissionCode'), dataIndex: 'permCd', key: 'permCd', width: 200 },
+  { title: t('menu.sort'), dataIndex: 'sort', key: 'sort', width: 80 },
+  { title: t('menu.display'), key: 'isDsp', width: 80 },
+  { title: t('menu.actions'), key: 'action', width: 220, fixed: 'right' as const },
+])
 
 const getIcon = (name?: string) => (name ? (Icons as Record<string, any>)[name] || MenuOutlined : null)
-const allParentIds = computed(() => flatMenus.value.filter((menu) => menu.typ === '1').map((menu) => menu.menuId))
+const allParentIds = computed(() => flatMenus.value.filter(menu => menu.typ === '1').map(menu => menu.menuId))
 const parentOptions = computed(() => {
   const excluded = editingId.value ? collectDescendantIds(dataSource.value, editingId.value) : new Set<string>()
   return [
-    { label: '根菜单', value: '0' },
+    { label: t('menu.root'), value: '0' },
     ...flatMenus.value
-      .filter((menu) => menu.typ === '1' && !excluded.has(menu.menuId))
-      .map((menu) => ({ label: menu.menuNm, value: menu.menuId })),
+      .filter(menu => menu.typ === '1' && !excluded.has(menu.menuId))
+      .map(menu => ({ label: menu.menuNm, value: menu.menuId })),
   ]
 })
 
@@ -138,15 +202,24 @@ const fetchMenus = async () => {
     flatMenus.value = await listMenus()
     dataSource.value = buildMenuTree(flatMenus.value)
   } catch (error: any) {
-    message.error(error?.message || '获取菜单列表失败')
+    message.error(error?.message || t('menu.loadFailed'))
   } finally {
     loading.value = false
   }
 }
 
-const resetForm = (prentId = '0') => Object.assign(formData, {
-  menuNm: '', permCd: '', path: '', prentId, sort: 0, icon: '', typ: '1', isDsp: 1, menuSource: '',
-})
+const resetForm = (prentId = '0') =>
+  Object.assign(formData, {
+    menuNm: '',
+    permCd: '',
+    path: '',
+    prentId,
+    sort: 0,
+    icon: '',
+    typ: '1',
+    isDsp: 1,
+    menuSource: '',
+  })
 
 const handleAdd = (parent?: SysMenu) => {
   editingId.value = null
@@ -171,7 +244,7 @@ const handleEdit = async (record: SysMenu) => {
     })
     modalOpen.value = true
   } catch (error: any) {
-    message.error(error?.message || '获取菜单详情失败')
+    message.error(error?.message || t('menu.detailFailed'))
   }
 }
 
@@ -191,11 +264,11 @@ const handleSave = async () => {
       isDsp: formData.isDsp,
       menuSource: formData.menuSource || undefined,
     })
-    message.success(editingId.value ? '修改成功' : '新增成功')
+    message.success(editingId.value ? t('user.editSuccess') : t('user.addSuccess'))
     modalOpen.value = false
     await fetchMenus()
   } catch (error: any) {
-    if (!error?.errorFields) message.error(error?.message || '保存菜单失败')
+    if (!error?.errorFields) message.error(error?.message || t('menu.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -203,11 +276,11 @@ const handleSave = async () => {
 
 const handleDelete = (record: SysMenu) => {
   Modal.confirm({
-    title: '确认删除',
-    content: `确定要删除菜单“${record.menuNm}”吗？`,
+    title: t('common.confirm'),
+    content: t('menu.confirmDelete', { name: record.menuNm }),
     onOk: async () => {
       await removeMenu(record.menuId)
-      message.success('删除成功')
+      message.success(t('common.deleteSuccess'))
       await fetchMenus()
     },
   })

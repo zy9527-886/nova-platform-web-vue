@@ -4,18 +4,14 @@
       <!-- 左侧导航 -->
       <a-col :span="6">
         <a-card :bordered="false" class="settings-nav">
-          <a-menu
-            v-model:selectedKeys="selectedKeys"
-            mode="inline"
-            @select="handleMenuSelect"
-          >
+          <a-menu v-model:selected-keys="selectedKeys" mode="inline" @select="handleMenuSelect">
             <a-menu-item key="basic">
               <SettingOutlined />
-              <span>基础设置</span>
+              <span>{{ t('settings.basic') }}</span>
             </a-menu-item>
             <a-menu-item key="security">
               <SafetyOutlined />
-              <span>安全设置</span>
+              <span>{{ t('settings.security') }}</span>
             </a-menu-item>
           </a-menu>
         </a-card>
@@ -44,12 +40,14 @@ import { ref, computed } from 'vue'
 import { SettingOutlined, SafetyOutlined } from '@ant-design/icons-vue'
 import BasicSettings from './components/BasicSettings.vue'
 import SecuritySettings from './components/SecuritySettings.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const selectedKeys = ref<string[]>(['basic'])
 const currentKey = ref<string>('basic')
 
 const currentTitle = computed(() => {
-  return currentKey.value === 'basic' ? '基础设置' : '安全设置'
+  return t(currentKey.value === 'basic' ? 'settings.basic' : 'settings.security')
 })
 
 const handleMenuSelect = ({ key }: { key: string }) => {
@@ -88,4 +86,3 @@ const handleMenuSelect = ({ key }: { key: string }) => {
   }
 }
 </style>
-

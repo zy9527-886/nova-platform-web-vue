@@ -1,27 +1,26 @@
 <template>
   <a-popover
+    v-model:open="popoverOpen"
     trigger="click"
     placement="bottomLeft"
     :overlay-style="{ width: '520px', maxWidth: 'calc(100vw - 48px)' }"
-    v-model:open="popoverOpen"
   >
     <template #content>
       <div class="icon-picker">
         <!-- 风格切换：线框 / 实底 / 双色 -->
-        <a-tabs v-model:activeKey="activeStyle" size="small" class="style-tabs">
-          <a-tab-pane key="outlined" tab="线框风格" />
-          <a-tab-pane key="filled" tab="实底风格" />
-          <a-tab-pane key="twoTone" tab="双色风格" />
+        <a-tabs v-model:active-key="activeStyle" size="small" class="style-tabs">
+          <a-tab-pane key="outlined" :tab="t('menu.outlinedIcons')" />
+          <a-tab-pane key="filled" :tab="t('menu.filledIcons')" />
+          <a-tab-pane key="twoTone" :tab="t('menu.twoToneIcons')" />
         </a-tabs>
 
         <!-- 放在 Form.Item 里的内部输入不参与表单收集，包一层 a-form-item-rest -->
         <a-form-item-rest>
           <a-input
-            v-model:value="keyword"
-            allow-clear
-            placeholder="输入英文关键字搜索"
-            class="icon-search"
-          >
+v-model:value="keyword"
+allow-clear
+:placeholder="t('menu.iconSearch')"
+class="icon-search">
             <template #prefix>
               <SearchOutlined />
             </template>
@@ -35,27 +34,22 @@
             type="button"
             class="icon-item"
             :class="{ active: name === value }"
-            @click="selectIcon(name)"
             :title="name"
+            @click="selectIcon(name)"
           >
-            <component
-              :is="getIcon(name)"
-              class="icon"
-              v-bind="activeStyle === 'twoTone' ? { twoToneColor } : {}"
-            />
+            <component :is="getIcon(name)" class="icon" v-bind="activeStyle === 'twoTone' ? { twoToneColor } : {}" />
           </button>
         </div>
       </div>
     </template>
 
     <a-input
-      :value="value"
-      readonly
-      placeholder="请选择图标"
-      @click="popoverOpen = true"
-    >
+:value="value"
+readonly
+:placeholder="t('menu.iconPlaceholder')"
+@click="popoverOpen = true">
       <template #prefix>
-        <component v-if="value" :is="getIcon(value)" />
+        <component :is="getIcon(value)" v-if="value" />
         <span v-else style="display: inline-block; width: 14px"></span>
       </template>
     </a-input>
@@ -66,6 +60,9 @@
 import { computed, ref, watch, type Component } from 'vue'
 import * as Icons from '@ant-design/icons-vue'
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Props {
   value?: string
@@ -87,22 +84,16 @@ const iconsMap = Icons as Record<string, Component>
 
 watch(
   () => popoverOpen.value,
-  (open) => {
+  open => {
     if (open) keyword.value = ''
-  }
+  },
 )
 
-const outlinedIcons = computed(() =>
-  Object.keys(Icons).filter((k) => /^(?!default$)[A-Z].*Outlined$/.test(k))
-)
+const outlinedIcons = computed(() => Object.keys(Icons).filter(k => /^(?!default$)[A-Z].*Outlined$/.test(k)))
 
-const filledIcons = computed(() =>
-  Object.keys(Icons).filter((k) => /^(?!default$)[A-Z].*Filled$/.test(k))
-)
+const filledIcons = computed(() => Object.keys(Icons).filter(k => /^(?!default$)[A-Z].*Filled$/.test(k)))
 
-const twoToneIcons = computed(() =>
-  Object.keys(Icons).filter((k) => /^(?!default$)[A-Z].*TwoTone$/.test(k))
-)
+const twoToneIcons = computed(() => Object.keys(Icons).filter(k => /^(?!default$)[A-Z].*TwoTone$/.test(k)))
 
 const displayIconNames = computed(() => {
   let base: string[]
@@ -118,7 +109,7 @@ const displayIconNames = computed(() => {
   }
   const k = keyword.value.trim().toLowerCase()
   if (!k) return base
-  return base.filter((n) => n.toLowerCase().includes(k))
+  return base.filter(n => n.toLowerCase().includes(k))
 })
 
 const getIcon = (iconName?: string): Component | null => {
@@ -185,5 +176,3 @@ const selectIcon = (name: string) => {
   color: rgba(0, 0, 0, 0.85);
 }
 </style>
-
-

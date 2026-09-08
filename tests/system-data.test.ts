@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import * as dataHelpers from '../src/views/system/shared/data.ts'
 
 import {
   buildMenuTree,
@@ -40,4 +41,24 @@ test('toUserRoleList preserves snowflake ids as strings and removes duplicates',
     { rolId: '9007199254740993' },
     { rolId: '22' },
   ])
+})
+
+test('buildUserQuery maps all six backend filters and wraps the selected role', () => {
+  assert.equal(typeof (dataHelpers as Record<string, unknown>).buildUserQuery, 'function')
+
+  assert.deepEqual(dataHelpers.buildUserQuery({
+    userNm: 'alice',
+    idNo: '110101',
+    realNm: 'Alice',
+    tel: '13800000000',
+    stus: '1',
+    roleId: '9007199254740993',
+  }), {
+    userNm: 'alice',
+    idNo: '110101',
+    realNm: 'Alice',
+    tel: '13800000000',
+    stus: '1',
+    userRolList: [{ rolId: '9007199254740993' }],
+  })
 })

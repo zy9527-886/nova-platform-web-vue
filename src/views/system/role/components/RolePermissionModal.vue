@@ -1,16 +1,22 @@
 <template>
   <a-modal
     :open="open"
-    title="菜单权限"
+    :title="t('role.menuPermissions')"
     :confirm-loading="saving"
     destroy-on-close
     @cancel="emit('update:open', false)"
     @ok="handleSave"
   >
     <a-spin :spinning="loading">
-      <a-alert v-if="record" type="info" show-icon :message="`正在配置角色：${record.rolNm}`" class="role-alert" />
+      <a-alert
+        v-if="record"
+        type="info"
+        show-icon
+        :message="t('role.configuring', { name: record.rolNm })"
+        class="role-alert"
+      />
       <a-tree
-        v-model:checkedKeys="checkedKeys"
+        v-model:checked-keys="checkedKeys"
         checkable
         default-expand-all
         :field-names="{ title: 'menuNm', key: 'menuId', children: 'children' }"
@@ -23,10 +29,13 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { message } from 'ant-design-vue'
+import { useI18n } from 'vue-i18n'
 
 import { listMenus, type SysMenu } from '@/api/menu'
 import { bindRoleMenus, getRoleMenuIds, type SysRole } from '@/api/system/role'
 import { buildMenuTree } from '@/views/system/shared/data'
+
+const { t } = useI18n()
 
 const props = defineProps<{ open: boolean; record: SysRole | null }>()
 const emit = defineEmits<{
@@ -41,22 +50,19 @@ const checkedKeys = ref<string[]>([])
 
 watch(
   () => props.open,
-  async (open) => {
+  async open => {
     if (!open || !props.record) return
     loading.value = true
     try {
-      const [menus, selected] = await Promise.all([
-        listMenus(),
-        getRoleMenuIds(props.record.rolId),
-      ])
+      const [menus, selected] = await Promise.all([listMenus(), getRoleMenuIds(props.record.rolId)])
       treeData.value = buildMenuTree(menus)
       checkedKeys.value = selected.data
     } catch (error: any) {
-      message.error(error?.message || '获取角色权限失败')
+      message.error(error?.message || t('role.permissionsFailed'))
     } finally {
       loading.value = false
     }
-  }
+  },
 )
 
 const handleSave = async () => {
@@ -64,10 +70,10 @@ const handleSave = async () => {
   saving.value = true
   try {
     await bindRoleMenus(props.record.rolId, checkedKeys.value.map(String))
-    message.success('权限保存成功')
+    message.success(t('role.permissionsSaved'))
     emit('success')
   } catch (error: any) {
-    message.error(error?.message || '权限保存失败')
+    message.error(error?.message || t('role.savePermissionsFailed'))
   } finally {
     saving.value = false
   }

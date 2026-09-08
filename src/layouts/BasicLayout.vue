@@ -55,7 +55,9 @@
                 <a-avatar :size="32" :src="userInfo?.avatar" class="user-avatar">
                   <template #icon><UserOutlined /></template>
                 </a-avatar>
-                <span class="username">{{ userInfo?.nickname || userInfo?.username || t('layout.administrator') }}</span>
+                <span class="username">{{
+                  userInfo?.nickname || userInfo?.username || t('layout.administrator')
+                }}</span>
               </div>
               <template #overlay>
                 <a-menu>
@@ -125,7 +127,7 @@ const siderTheme = computed(() => (appStore.theme === 'light' ? 'light' : 'dark'
 
 const collapsed = computed({
   get: () => appStore.collapsed,
-  set: (val) => appStore.setCollapsed(val),
+  set: val => appStore.setCollapsed(val),
 })
 
 const tabsList = computed(() => appStore.tabsList)

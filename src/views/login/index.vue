@@ -15,17 +15,13 @@
         <a-form
           :model="loginForm"
           :rules="rules"
-          @finish="handleLogin"
           class="login-form"
           :label-col="{ span: 0 }"
           :wrapper-col="{ span: 24 }"
+          @finish="handleLogin"
         >
           <a-form-item name="username">
-            <a-input
-              v-model:value="loginForm.username"
-              size="large"
-              :placeholder="t('login.usernameRequired')"
-            >
+            <a-input v-model:value="loginForm.username" size="large" :placeholder="t('login.usernameRequired')">
               <template #prefix>
                 <UserOutlined />
               </template>
@@ -37,7 +33,7 @@
               v-model:value="loginForm.password"
               size="large"
               :placeholder="t('login.passwordRequired')"
-              @pressEnter="handleLogin"
+              @press-enter="handleLogin"
             >
               <template #prefix>
                 <LockOutlined />
@@ -54,12 +50,11 @@
 
           <a-form-item>
             <a-button
-              type="primary"
-              html-type="submit"
-              size="large"
-              block
-              :loading="loading"
-            >
+type="primary"
+html-type="submit"
+size="large"
+block
+:loading="loading">
               {{ t('login.submit') }}
             </a-button>
           </a-form-item>

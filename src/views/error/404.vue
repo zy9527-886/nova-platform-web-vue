@@ -1,12 +1,8 @@
 <template>
   <div class="error-page">
-    <a-result
-      status="404"
-      title="404"
-      sub-title="抱歉，您访问的页面不存在"
-    >
+    <a-result status="404" title="404" :sub-title="t('error.pageNotFound')">
       <template #extra>
-        <a-button type="primary" @click="goHome">返回首页</a-button>
+        <a-button type="primary" @click="goHome">{{ t('error.backHome') }}</a-button>
       </template>
     </a-result>
   </div>
@@ -14,8 +10,10 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
+const { t } = useI18n()
 
 const goHome = () => {
   router.push('/')
@@ -31,4 +29,3 @@ const goHome = () => {
   background: #f0f2f5;
 }
 </style>
-

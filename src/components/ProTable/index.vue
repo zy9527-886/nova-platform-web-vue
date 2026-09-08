@@ -10,7 +10,7 @@
             <slot name="extra"></slot>
             <a-button v-if="showNew" type="primary" @click="handleNew">
               <PlusOutlined />
-              新建
+              {{ t('table.new') }}
             </a-button>
           </div>
           <div class="table-extra-divider"></div>
@@ -23,15 +23,15 @@
                 <a-menu @click="handleDensityChange">
                   <a-menu-item key="default">
                     <CheckOutlined v-if="density === 'default'" />
-                    <span style="margin-left: 8px">默认</span>
+                    <span style="margin-left: 8px">{{ t('table.densityDefault') }}</span>
                   </a-menu-item>
                   <a-menu-item key="middle">
                     <CheckOutlined v-if="density === 'middle'" />
-                    <span style="margin-left: 8px">中等</span>
+                    <span style="margin-left: 8px">{{ t('table.densityMiddle') }}</span>
                   </a-menu-item>
                   <a-menu-item key="small">
                     <CheckOutlined v-if="density === 'small'" />
-                    <span style="margin-left: 8px">紧凑</span>
+                    <span style="margin-left: 8px">{{ t('table.densitySmall') }}</span>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -47,12 +47,16 @@
                 <div class="column-setting-dropdown">
                   <div class="column-setting-header">
                     <a-checkbox :checked="allColumnsVisible" :indeterminate="indeterminate" @change="handleSelectAll">
-                      <span class="header-title">列展示 / 排序</span>
+                      <span class="header-title">{{ t('table.columnDisplay') }}</span>
                     </a-checkbox>
-                    <a-button type="link" size="small" @click="handleResetColumns">重置</a-button>
+                    <a-button type="link" size="small" @click="handleResetColumns">{{ t('common.reset') }}</a-button>
                   </div>
                   <div class="column-setting-list">
-                    <draggable v-model="orderedColumns" :item-key="getColumnKey" handle=".drag-handle" :animation="200">
+                    <draggable
+v-model="orderedColumns"
+:item-key="getColumnKey"
+handle=".drag-handle"
+:animation="200">
                       <!-- @vue-ignore -->
                       <template #item="{ element: col }">
                         <div class="column-setting-item">
@@ -115,6 +119,9 @@ import {
 } from '@ant-design/icons-vue'
 import type { TableColumnType } from 'ant-design-vue'
 import draggable from 'vuedraggable'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 type TableRow = Record<string, unknown>
 type ProTableColumn = TableColumnType & { hidden?: boolean }

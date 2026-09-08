@@ -9,7 +9,12 @@
     </a-card>
 
     <a-row :gutter="16" class="stats-row">
-      <a-col v-for="item in stats" :key="item.title" :xs="24" :sm="12" :xl="6">
+      <a-col
+v-for="item in stats"
+:key="item.title"
+:xs="24"
+:sm="12"
+:xl="6">
         <a-card class="stat-card" :bordered="false">
           <div class="stat-header">
             <span class="stat-title">{{ item.title }}</span>
@@ -27,7 +32,11 @@
 
     <a-card :title="t('dashboard.quickActions')" :bordered="false" class="actions-card">
       <a-row :gutter="16">
-        <a-col v-for="action in quickActions" :key="action.title" :xs="24" :md="8">
+        <a-col
+v-for="action in quickActions"
+:key="action.title"
+:xs="24"
+:md="8">
           <div class="action-item" @click="goTo(action.path)">
             <div class="action-icon" :style="{ color: action.color, background: action.bg }">
               <component :is="action.icon" />

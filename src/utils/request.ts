@@ -3,6 +3,9 @@ import { message } from 'ant-design-vue'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { useUserStore } from '@/stores/user'
+import { i18n } from '@/locales'
+
+const t = i18n.global.t
 
 NProgress.configure({ showSpinner: false })
 
@@ -25,7 +28,7 @@ service.interceptors.request.use(
   (error: any) => {
     NProgress.done()
     return Promise.reject(error)
-  }
+  },
 )
 
 // 响应拦截器
@@ -36,15 +39,15 @@ service.interceptors.response.use(
 
     // 如果返回的状态码不是200，则视为错误
     if (res.code !== 200 && res.code !== 0) {
-      const responseMessage = res.msg || res.message || res.errorMsg || '请求失败'
+      const responseMessage = res.msg || res.message || res.errorMsg || t('common.requestFailed')
       message.error(responseMessage)
-      
+
       // 401: 未登录或token过期
       if (res.code === 401) {
         const userStore = useUserStore()
         userStore.logout()
       }
-      
+
       return Promise.reject(new Error(responseMessage))
     } else {
       return res
@@ -52,35 +55,35 @@ service.interceptors.response.use(
   },
   (error: any) => {
     NProgress.done()
-    let errorMessage = '请求失败'
-    
+    let errorMessage = t('common.requestFailed')
+
     if (error.response) {
       switch (error.response.status) {
-        case 401:
-          errorMessage = '未授权，请重新登录'
+        case 401: {
+          errorMessage = t('common.unauthorized')
           const userStore = useUserStore()
           userStore.logout()
           break
+        }
         case 403:
-          errorMessage = '拒绝访问'
+          errorMessage = t('common.forbidden')
           break
         case 404:
-          errorMessage = '请求错误，未找到该资源'
+          errorMessage = t('common.notFound')
           break
         case 500:
-          errorMessage = '服务器错误'
+          errorMessage = t('common.serverError')
           break
         default:
-          errorMessage = `连接错误${error.response.status}`
+          errorMessage = t('common.connectionError', { status: error.response.status })
       }
     } else {
-      errorMessage = '网络连接异常'
+      errorMessage = t('common.networkError')
     }
-    
+
     message.error(errorMessage)
     return Promise.reject(error)
-  }
+  },
 )
 
 export default service
-
