@@ -9,12 +9,12 @@
         </a-tooltip>
         <a-tooltip :title="t('menu.expandAll')">
           <a-button :aria-label="t('menu.expandAll')" @click="expandedRowKeys = allParentIds">
-            <PlusSquareTwoTone two-tone-color="#1677ff" />
+            <PlusSquareTwoTone :two-tone-color="primaryColor" />
           </a-button>
         </a-tooltip>
         <a-tooltip :title="t('menu.collapseAll')">
           <a-button :aria-label="t('menu.collapseAll')" @click="expandedRowKeys = []">
-            <MinusSquareTwoTone two-tone-color="#1677ff" />
+            <MinusSquareTwoTone :two-tone-color="primaryColor" />
           </a-button>
         </a-tooltip>
       </a-space>
@@ -66,7 +66,7 @@
                 :aria-label="t('common.edit')"
                 @click="handleEdit(record)"
               >
-                <EditTwoTone two-tone-color="#1677ff" />
+                <EditTwoTone :two-tone-color="primaryColor" />
               </a-button>
             </a-tooltip>
             <a-tooltip :title="t('common.delete')">
@@ -175,12 +175,15 @@ import {
 import * as Icons from '@ant-design/icons-vue'
 import { message, Modal, type FormInstance } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/stores/app'
 
 import { getMenu, listMenus, removeMenu, saveMenu, type SysMenu } from '@/api/menu'
 import IconPicker from '@/components/IconPicker/index.vue'
 import { buildMenuTree, collectDescendantIds } from '@/views/system/shared/data'
 
 const { t } = useI18n()
+const appStore = useAppStore()
+const primaryColor = computed(() => appStore.primaryColor)
 
 const loading = ref(false)
 const saving = ref(false)

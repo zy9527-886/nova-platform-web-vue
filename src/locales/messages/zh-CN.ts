@@ -41,6 +41,8 @@ export default {
     dark: '暗色',
     language: '界面语言',
     languageDesc: '切换后立即应用并自动保存',
+    themeColor: '主题色',
+    themeColorDesc: '选择后立即应用并自动保存',
     fullscreen: '全屏',
     exitFullscreen: '退出全屏',
     personalSettings: '个人设置',

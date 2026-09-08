@@ -41,6 +41,8 @@ export default {
     dark: 'Dark',
     language: 'Interface language',
     languageDesc: 'Changes apply immediately and are saved automatically',
+    themeColor: 'Theme color',
+    themeColorDesc: 'Changes apply immediately and are saved automatically',
     fullscreen: 'Full screen',
     exitFullscreen: 'Exit full screen',
     personalSettings: 'Personal settings',

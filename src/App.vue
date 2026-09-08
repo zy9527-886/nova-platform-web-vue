@@ -13,10 +13,13 @@ import { useAppStore } from '@/stores/app'
 const appStore = useAppStore()
 const antdLocale = computed(() => getAntdLocale(appStore.locale))
 
-const themeConfig = {
+const themeConfig = computed(() => ({
   // 只使用 Ant Design 默认算法，不再区分暗黑模式
   algorithm: antdTheme.defaultAlgorithm,
-}
+  token: {
+    colorPrimary: appStore.primaryColor,
+  },
+}))
 </script>
 
 <style scoped>

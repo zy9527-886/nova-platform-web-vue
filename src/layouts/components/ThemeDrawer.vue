@@ -46,6 +46,25 @@
         </div>
       </div>
       <div class="theme-section">
+        <div class="section-title">{{ t('layout.themeColor') }}</div>
+        <div class="section-desc">{{ t('layout.themeColorDesc') }}</div>
+        <div class="color-options">
+          <button
+            v-for="colorOption in PRIMARY_COLORS"
+            :key="colorOption.value"
+            type="button"
+            class="color-swatch"
+            :class="{ active: currentPrimaryColor === colorOption.value }"
+            :style="{ backgroundColor: colorOption.value }"
+            :title="colorOption.value"
+            :aria-label="colorOption.value"
+            @click="handlePrimaryColorChange(colorOption.value)"
+          >
+            <CheckOutlined v-if="currentPrimaryColor === colorOption.value" />
+          </button>
+        </div>
+      </div>
+      <div class="theme-section">
         <div class="section-title">{{ t('layout.language') }}</div>
         <div class="section-desc">{{ t('layout.languageDesc') }}</div>
         <a-select
@@ -62,9 +81,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CheckCircleOutlined } from '@ant-design/icons-vue'
+import { CheckCircleOutlined, CheckOutlined } from '@ant-design/icons-vue'
 import { useAppStore } from '@/stores/app'
 import type { AppLocale } from '@/locales/types'
+import { PRIMARY_COLORS, type PrimaryColor } from '@/theme/colors'
 
 interface Props {
   open: boolean
@@ -81,6 +101,7 @@ const appStore = useAppStore()
 const { t } = useI18n()
 const currentTheme = computed(() => appStore.theme)
 const currentLocale = computed(() => appStore.locale)
+const currentPrimaryColor = computed(() => appStore.primaryColor)
 
 const themeOptions = computed<{ label: string; value: 'light' | 'dark' }[]>(() => [
   { label: t('layout.light'), value: 'light' },
@@ -99,6 +120,7 @@ const handleThemeChange = (theme: 'light' | 'dark') => {
 }
 
 const handleLocaleChange = (locale: AppLocale) => appStore.setLocale(locale)
+const handlePrimaryColorChange = (color: PrimaryColor) => appStore.setPrimaryColor(color)
 
 const handleClose = () => {
   emit('update:open', false)
@@ -189,7 +211,7 @@ const handleClose = () => {
             pointer-events: none;
 
             .check-icon {
-              color: #1890ff;
+              color: var(--app-primary-color);
               font-size: 20px;
             }
           }
@@ -207,7 +229,7 @@ const handleClose = () => {
             pointer-events: none;
 
             .check-icon {
-              color: #1890ff;
+              color: var(--app-primary-color);
               font-size: 20px;
             }
           }
@@ -225,7 +247,7 @@ const handleClose = () => {
             pointer-events: none;
 
             .check-icon {
-              color: #1890ff;
+              color: var(--app-primary-color);
               font-size: 20px;
             }
           }
@@ -277,7 +299,7 @@ const handleClose = () => {
 
         &.active {
           .theme-preview {
-            border-color: #1890ff;
+            border-color: var(--app-primary-color);
             box-shadow:
               0 0 0 2px rgba(24, 144, 255, 0.2),
               0 2px 8px rgba(0, 0, 0, 0.08);
@@ -286,13 +308,46 @@ const handleClose = () => {
 
         &:hover {
           .theme-preview {
-            border-color: #40a9ff;
+            border-color: var(--app-primary-color);
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
           }
         }
       }
 
     }
+  }
+}
+
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.color-swatch {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 4px rgba(0, 0, 0, 0.14);
   }
 }
 

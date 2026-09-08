@@ -41,6 +41,8 @@ export default {
     dark: 'Giza',
     language: 'Lugha ya kiolesura',
     languageDesc: 'Mabadiliko yanatumika mara moja na kuhifadhiwa',
+    themeColor: 'Rangi ya mandhari',
+    themeColorDesc: 'Mabadiliko yanatumika mara moja na kuhifadhiwa',
     fullscreen: 'Skrini nzima',
     exitFullscreen: 'Ondoka skrini nzima',
     personalSettings: 'Mipangilio binafsi',

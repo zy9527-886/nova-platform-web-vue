@@ -119,7 +119,7 @@
                   :aria-label="t('common.edit')"
                   @click="handleEdit(record)"
                 >
-                  <EditTwoTone two-tone-color="#1677ff" />
+                  <EditTwoTone :two-tone-color="primaryColor" />
                 </a-button>
               </a-tooltip>
               <a-tooltip :title="t('common.delete')">
@@ -156,6 +156,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/stores/app'
 
 import { listRoles } from '@/api/system/role'
 import { getUser, pageUsers, removeUser, removeUsers, type SysUser } from '@/api/system/user'
@@ -163,6 +164,8 @@ import { buildUserQuery, pageAfterDelete } from '@/views/system/shared/data'
 import UserModal from './components/UserModal.vue'
 
 const { t } = useI18n()
+const appStore = useAppStore()
+const primaryColor = computed(() => appStore.primaryColor)
 
 const loading = ref(false)
 const dataSource = ref<SysUser[]>([])
@@ -374,7 +377,7 @@ onMounted(() => {
 }
 
 .primary-icon {
-  color: #1677ff;
+  color: var(--app-primary-color);
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {

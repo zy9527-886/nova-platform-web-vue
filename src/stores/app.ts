@@ -8,9 +8,11 @@ import 'dayjs/locale/zh-cn'
 import 'dayjs/locale/zh-tw'
 import { setI18nLocale } from '@/locales'
 import { getDayjsLocale, normalizeLocale, type AppLocale } from '@/locales/types'
+import { normalizePrimaryColor, type PrimaryColor } from '@/theme/colors'
 
 const TABS_KEY = 'app_tabs_list'
 const LOCALE_KEY = 'app_locale'
+const PRIMARY_COLOR_KEY = 'app_primary_color'
 
 interface AppTab {
   path: string
@@ -38,6 +40,23 @@ export const useAppStore = defineStore('app', () => {
 
   // 主题
   const theme = ref<'light' | 'dark'>('dark')
+  const primaryColor = ref<PrimaryColor>(
+    normalizePrimaryColor(Storage.get<PrimaryColor>(PRIMARY_COLOR_KEY)),
+  )
+
+  const applyPrimaryColor = (value: PrimaryColor) => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--app-primary-color', value)
+    }
+  }
+
+  const setPrimaryColor = (value: PrimaryColor) => {
+    primaryColor.value = value
+    Storage.set(PRIMARY_COLOR_KEY, value)
+    applyPrimaryColor(value)
+  }
+
+  applyPrimaryColor(primaryColor.value)
 
   const savedLocale = Storage.get<AppLocale>(LOCALE_KEY)
   const browserLocale = typeof navigator === 'undefined' ? undefined : navigator.language
@@ -130,6 +149,7 @@ export const useAppStore = defineStore('app', () => {
     collapsed,
     tabsList,
     theme,
+    primaryColor,
     locale,
     refreshPath,
     refreshStamp,
@@ -142,6 +162,7 @@ export const useAppStore = defineStore('app', () => {
     closeLeftTabs,
     closeRightTabs,
     setTheme,
+    setPrimaryColor,
     setLocale,
     triggerRefresh,
   }

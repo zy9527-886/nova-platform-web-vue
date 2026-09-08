@@ -166,7 +166,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
 
   // 确保只有子菜单项被选中时高亮
   .ant-menu-item-selected {
-    background-color: #1890ff !important;
+    background-color: var(--app-primary-color) !important;
     color: #fff !important;
   }
 

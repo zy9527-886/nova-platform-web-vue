@@ -61,8 +61,10 @@ import { computed, ref, watch, type Component } from 'vue'
 import * as Icons from '@ant-design/icons-vue'
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/stores/app'
 
 const { t } = useI18n()
+const appStore = useAppStore()
 
 interface Props {
   value?: string
@@ -78,7 +80,7 @@ const emit = defineEmits<Emits>()
 const popoverOpen = ref(false)
 const keyword = ref('')
 const activeStyle = ref<'outlined' | 'filled' | 'twoTone'>('outlined')
-const twoToneColor = '#1677ff'
+const twoToneColor = computed(() => appStore.primaryColor)
 
 const iconsMap = Icons as Record<string, Component>
 
@@ -162,12 +164,12 @@ const selectIcon = (name: string) => {
 }
 
 .icon-item:hover {
-  border-color: #1677ff;
+    border-color: var(--app-primary-color);
   box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
 }
 
 .icon-item.active {
-  border-color: #1677ff;
+      border-color: var(--app-primary-color);
   background: #e6f4ff;
 }
 

@@ -44,7 +44,7 @@
                 :aria-label="t('common.edit')"
                 @click="handleEdit(record)"
               >
-                <EditTwoTone two-tone-color="#1677ff" />
+                <EditTwoTone :two-tone-color="primaryColor" />
               </a-button>
             </a-tooltip>
             <a-tooltip :title="t('role.permissions')">
@@ -55,7 +55,7 @@
                 :aria-label="t('role.permissions')"
                 @click="handlePermission(record)"
               >
-                <SafetyCertificateTwoTone two-tone-color="#1677ff" />
+                <SafetyCertificateTwoTone :two-tone-color="primaryColor" />
               </a-button>
             </a-tooltip>
             <a-tooltip :title="t('common.delete')">
@@ -90,6 +90,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
+import { useAppStore } from '@/stores/app'
 
 import { getRole, pageRoles, removeRole, removeRoles, type SysRole } from '@/api/system/role'
 import { pageAfterDelete } from '@/views/system/shared/data'
@@ -97,6 +98,8 @@ import RoleModal from './components/RoleModal.vue'
 import RolePermissionModal from './components/RolePermissionModal.vue'
 
 const { t } = useI18n()
+const appStore = useAppStore()
+const primaryColor = computed(() => appStore.primaryColor)
 
 const loading = ref(false)
 const dataSource = ref<SysRole[]>([])
