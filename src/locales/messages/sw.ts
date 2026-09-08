@@ -30,6 +30,6 @@ export default {
   login: {
     title: 'Jukwaa la Usimamizi la Nova', subtitle: 'Karibu tena. Ingia kwenye akaunti yako', username: 'Jina la mtumiaji', password: 'Nenosiri',
     usernameRequired: 'Weka jina la mtumiaji', passwordRequired: 'Weka nenosiri', submit: 'Ingia', submitting: 'Inaingia...',
-    success: 'Umeingia', failed: 'Kuingia kumeshindwa', remember: 'Nikumbuke',
+    success: 'Umeingia', failed: 'Kuingia kumeshindwa. Kagua taarifa zako', remember: 'Nikumbuke', forgot: 'Umesahau nenosiri?', demo: 'Akaunti ya majaribio',
   },
 }

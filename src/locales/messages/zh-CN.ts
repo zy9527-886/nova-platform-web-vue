@@ -30,6 +30,6 @@ export default {
   login: {
     title: 'Nova 管理平台', subtitle: '欢迎回来，请登录您的账户', username: '用户名', password: '密码',
     usernameRequired: '请输入用户名', passwordRequired: '请输入密码', submit: '登录', submitting: '登录中...',
-    success: '登录成功', failed: '登录失败', remember: '记住我',
+    success: '登录成功', failed: '登录失败，请检查账号密码', remember: '记住我', forgot: '忘记密码？', demo: '演示账号',
   },
 }

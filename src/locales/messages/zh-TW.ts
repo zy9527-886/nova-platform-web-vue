@@ -30,6 +30,6 @@ export default {
   login: {
     title: 'Nova 管理平台', subtitle: '歡迎回來，請登入您的帳戶', username: '使用者名稱', password: '密碼',
     usernameRequired: '請輸入使用者名稱', passwordRequired: '請輸入密碼', submit: '登入', submitting: '登入中...',
-    success: '登入成功', failed: '登入失敗', remember: '記住我',
+    success: '登入成功', failed: '登入失敗，請檢查帳號密碼', remember: '記住我', forgot: '忘記密碼？', demo: '示範帳號',
   },
 }

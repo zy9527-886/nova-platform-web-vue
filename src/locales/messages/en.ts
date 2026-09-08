@@ -30,6 +30,6 @@ export default {
   login: {
     title: 'Nova Admin Platform', subtitle: 'Welcome back. Sign in to your account', username: 'Username', password: 'Password',
     usernameRequired: 'Enter your username', passwordRequired: 'Enter your password', submit: 'Sign in', submitting: 'Signing in...',
-    success: 'Signed in successfully', failed: 'Sign-in failed', remember: 'Remember me',
+    success: 'Signed in successfully', failed: 'Sign-in failed. Check your credentials', remember: 'Remember me', forgot: 'Forgot password?', demo: 'Demo account',
   },
 }

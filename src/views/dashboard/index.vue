@@ -2,9 +2,9 @@
   <div class="dashboard">
     <a-card :bordered="false" class="welcome-banner">
       <div class="welcome-content">
-        <div class="welcome-kicker">WORKSPACE OVERVIEW</div>
-        <div class="welcome-title">早安，Serati Ma，祝你开心每一天！</div>
-        <div class="welcome-desc">今日概览 · 保持专注与高效，系统状态稳定，任务进展顺利</div>
+        <div class="welcome-kicker">{{ t('dashboard.kicker') }}</div>
+        <div class="welcome-title">{{ t('dashboard.greeting', { name: 'Serati Ma' }) }}</div>
+        <div class="welcome-desc">{{ t('dashboard.description') }}</div>
       </div>
     </a-card>
 
@@ -20,12 +20,12 @@
           <div class="stat-value" :style="{ color: item.valueColor }">
             + <count-to :start-val="0" :end-val="item.value" :duration="1400" />
           </div>
-          <div class="stat-tip">较昨日稳步增长</div>
+          <div class="stat-tip">{{ t('dashboard.trend') }}</div>
         </a-card>
       </a-col>
     </a-row>
 
-    <a-card title="快捷操作" :bordered="false" class="actions-card">
+    <a-card :title="t('dashboard.quickActions')" :bordered="false" class="actions-card">
       <a-row :gutter="16">
         <a-col v-for="action in quickActions" :key="action.title" :xs="24" :md="8">
           <div class="action-item" @click="goTo(action.path)">
@@ -45,15 +45,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { UserOutlined, TeamOutlined, MenuOutlined, MessageOutlined, RightOutlined } from '@ant-design/icons-vue'
 
 const router = useRouter()
+const { t } = useI18n()
 
-const stats = ref([
+const stats = computed(() => [
   {
-    title: '用户数',
+    title: t('dashboard.users'),
     value: 12345,
     icon: UserOutlined,
     iconColor: '#1677ff',
@@ -61,7 +63,7 @@ const stats = ref([
     valueColor: '#1677ff',
   },
   {
-    title: '角色数',
+    title: t('dashboard.roles'),
     value: 156,
     icon: TeamOutlined,
     iconColor: '#52c41a',
@@ -69,7 +71,7 @@ const stats = ref([
     valueColor: '#52c41a',
   },
   {
-    title: '菜单数',
+    title: t('dashboard.menus'),
     value: 98,
     icon: MenuOutlined,
     iconColor: '#faad14',
@@ -77,7 +79,7 @@ const stats = ref([
     valueColor: '#faad14',
   },
   {
-    title: '消息数',
+    title: t('dashboard.messages'),
     value: 34567,
     icon: MessageOutlined,
     iconColor: '#f5222d',
@@ -86,26 +88,26 @@ const stats = ref([
   },
 ])
 
-const quickActions = ref([
+const quickActions = computed(() => [
   {
-    title: '用户管理',
-    desc: '维护用户账号、状态与信息',
+    title: t('route.user'),
+    desc: t('dashboard.userAction'),
     icon: UserOutlined,
     color: '#1677ff',
     bg: 'rgba(22, 119, 255, 0.12)',
     path: '/system/user',
   },
   {
-    title: '角色管理',
-    desc: '配置角色与对应权限范围',
+    title: t('route.role'),
+    desc: t('dashboard.roleAction'),
     icon: TeamOutlined,
     color: '#52c41a',
     bg: 'rgba(82, 196, 26, 0.12)',
     path: '/system/role',
   },
   {
-    title: '菜单管理',
-    desc: '管理菜单结构与路由展示',
+    title: t('route.menu'),
+    desc: t('dashboard.menuAction'),
     icon: MenuOutlined,
     color: '#fa8c16',
     bg: 'rgba(250, 140, 22, 0.12)',

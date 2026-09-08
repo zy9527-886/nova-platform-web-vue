@@ -9,7 +9,7 @@
     <div class="login-wrapper">
       <div class="login-box">
         <div class="login-header">
-          <h2>欢迎登录</h2>
+          <h2>{{ t('login.title') }}</h2>
         </div>
 
         <a-form
@@ -24,7 +24,7 @@
             <a-input
               v-model:value="loginForm.username"
               size="large"
-              placeholder="请输入用户名"
+              :placeholder="t('login.usernameRequired')"
             >
               <template #prefix>
                 <UserOutlined />
@@ -36,7 +36,7 @@
             <a-input-password
               v-model:value="loginForm.password"
               size="large"
-              placeholder="请输入密码"
+              :placeholder="t('login.passwordRequired')"
               @pressEnter="handleLogin"
             >
               <template #prefix>
@@ -47,8 +47,8 @@
 
           <a-form-item>
             <div class="login-options">
-              <a-checkbox v-model:checked="rememberMe">记住我</a-checkbox>
-              <a class="forgot-password">忘记密码？</a>
+              <a-checkbox v-model:checked="rememberMe">{{ t('login.remember') }}</a-checkbox>
+              <a class="forgot-password">{{ t('login.forgot') }}</a>
             </div>
           </a-form-item>
 
@@ -60,13 +60,13 @@
               block
               :loading="loading"
             >
-              登录
+              {{ t('login.submit') }}
             </a-button>
           </a-form-item>
         </a-form>
 
         <div class="login-footer">
-          <p>演示账号：<span>admin</span> / <span>admin123</span></p>
+          <p>{{ t('login.demo') }}：<span>admin</span> / <span>admin123</span></p>
         </div>
       </div>
     </div>
@@ -74,14 +74,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
 import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userStore = useUserStore()
+const { t } = useI18n()
 
 const loading = ref(false)
 const rememberMe = ref(false)
@@ -90,19 +92,19 @@ const loginForm = ref({
   password: 'admin123',
 })
 
-const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-}
+const rules = computed(() => ({
+  username: [{ required: true, message: t('login.usernameRequired'), trigger: 'blur' }],
+  password: [{ required: true, message: t('login.passwordRequired'), trigger: 'blur' }],
+}))
 
 const handleLogin = async () => {
   loading.value = true
   try {
     await userStore.loginAction(loginForm.value.username, loginForm.value.password)
-    message.success('登录成功')
+    message.success(t('login.success'))
     router.push('/')
   } catch (error: any) {
-    message.error(error.message || '登录失败，请检查账号密码')
+    message.error(error.message || t('login.failed'))
   } finally {
     loading.value = false
   }
