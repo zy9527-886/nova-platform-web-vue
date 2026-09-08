@@ -1,8 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { Storage } from '@/utils/storage'
+import dayjs from 'dayjs'
+import 'dayjs/locale/en'
+import 'dayjs/locale/sw'
+import 'dayjs/locale/zh-cn'
+import 'dayjs/locale/zh-tw'
+import { setI18nLocale } from '@/locales'
+import { getDayjsLocale, normalizeLocale, type AppLocale } from '@/locales/types'
 
 const TABS_KEY = 'app_tabs_list'
+const LOCALE_KEY = 'app_locale'
 
 export const useAppStore = defineStore('app', () => {
   // 侧边栏折叠状态
@@ -23,6 +31,23 @@ export const useAppStore = defineStore('app', () => {
 
   // 主题
   const theme = ref<'light' | 'dark'>('dark')
+
+  const savedLocale = Storage.get<AppLocale>(LOCALE_KEY)
+  const browserLocale = typeof navigator === 'undefined' ? undefined : navigator.language
+  const locale = ref<AppLocale>(normalizeLocale(savedLocale || browserLocale))
+
+  const applyLocale = (value: AppLocale) => {
+    setI18nLocale(value)
+    dayjs.locale(getDayjsLocale(value))
+  }
+
+  const setLocale = (value: AppLocale) => {
+    locale.value = value
+    Storage.set(LOCALE_KEY, value)
+    applyLocale(value)
+  }
+
+  applyLocale(locale.value)
 
   // 视图刷新标记
   const refreshPath = ref('')
@@ -98,6 +123,7 @@ export const useAppStore = defineStore('app', () => {
     collapsed,
     tabsList,
     theme,
+    locale,
     refreshPath,
     refreshStamp,
     toggleCollapsed,
@@ -109,6 +135,7 @@ export const useAppStore = defineStore('app', () => {
     closeLeftTabs,
     closeRightTabs,
     setTheme,
+    setLocale,
     triggerRefresh,
   }
 })
