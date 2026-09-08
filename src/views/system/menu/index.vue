@@ -1,12 +1,24 @@
 <template>
-  <a-card :bordered="false" :title="t('route.menu')">
-    <template #extra>
+  <a-card :bordered="false">
+    <div class="table-toolbar">
       <a-space>
-        <a-button @click="expandedRowKeys = allParentIds">{{ t('menu.expandAll') }}</a-button>
-        <a-button @click="expandedRowKeys = []">{{ t('menu.collapseAll') }}</a-button>
-        <a-button type="primary" @click="handleAdd()"><PlusOutlined />{{ t('menu.addMenu') }}</a-button>
+        <a-tooltip :title="t('menu.addMenu')">
+          <a-button :aria-label="t('menu.addMenu')" @click="handleAdd()">
+            <PlusCircleTwoTone two-tone-color="#52c41a" />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip :title="t('menu.expandAll')">
+          <a-button :aria-label="t('menu.expandAll')" @click="expandedRowKeys = allParentIds">
+            <PlusSquareTwoTone two-tone-color="#1677ff" />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip :title="t('menu.collapseAll')">
+          <a-button :aria-label="t('menu.collapseAll')" @click="expandedRowKeys = []">
+            <MinusSquareTwoTone two-tone-color="#1677ff" />
+          </a-button>
+        </a-tooltip>
       </a-space>
-    </template>
+    </div>
 
     <a-table
       row-key="menuId"
@@ -35,19 +47,39 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space>
-            <a-button
-v-if="record.typ === '1'"
-type="link"
-size="small"
-@click="handleAdd(record)">{{
-              t('menu.addChild')
-            }}</a-button>
-            <a-button type="link" size="small" @click="handleEdit(record)">{{ t('common.edit') }}</a-button>
-            <a-button
-type="link"
-size="small"
-danger
-@click="handleDelete(record)">{{ t('common.delete') }}</a-button>
+            <a-tooltip v-if="record.typ === '1'" :title="t('menu.addChild')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('menu.addChild')"
+                @click="handleAdd(record)"
+              >
+                <PlusSquareTwoTone two-tone-color="#52c41a" />
+              </a-button>
+            </a-tooltip>
+            <a-tooltip :title="t('common.edit')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('common.edit')"
+                @click="handleEdit(record)"
+              >
+                <EditTwoTone two-tone-color="#1677ff" />
+              </a-button>
+            </a-tooltip>
+            <a-tooltip :title="t('common.delete')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('common.delete')"
+                @click="handleDelete(record)"
+              >
+                <DeleteTwoTone two-tone-color="#ff4d4f" />
+              </a-button>
+            </a-tooltip>
           </a-space>
         </template>
       </template>
@@ -132,7 +164,14 @@ name="isDsp"
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { MenuOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  MenuOutlined,
+  MinusSquareTwoTone,
+  PlusCircleTwoTone,
+  PlusSquareTwoTone,
+} from '@ant-design/icons-vue'
 import * as Icons from '@ant-design/icons-vue'
 import { message, Modal, type FormInstance } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
@@ -181,7 +220,7 @@ const columns = computed(() => [
   { title: t('menu.permissionCode'), dataIndex: 'permCd', key: 'permCd', width: 200 },
   { title: t('menu.sort'), dataIndex: 'sort', key: 'sort', width: 80 },
   { title: t('menu.display'), key: 'isDsp', width: 80 },
-  { title: t('menu.actions'), key: 'action', width: 220, fixed: 'right' as const },
+  { title: t('menu.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
 
 const getIcon = (name?: string) => (name ? (Icons as Record<string, any>)[name] || MenuOutlined : null)
@@ -288,3 +327,10 @@ const handleDelete = (record: SysMenu) => {
 
 onMounted(fetchMenus)
 </script>
+
+<style lang="scss" scoped>
+.table-toolbar {
+  margin-bottom: 16px;
+  text-align: left;
+}
+</style>

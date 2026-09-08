@@ -1,13 +1,23 @@
 <template>
-  <a-card :bordered="false" :title="t('route.role')">
-    <template #extra>
+  <a-card :bordered="false">
+    <div class="table-toolbar">
       <a-space>
-        <a-button danger :disabled="!selectedRowKeys.length" @click="handleBatchDelete">{{
-          t('common.batchDelete')
-        }}</a-button>
-        <a-button type="primary" @click="handleAdd"><PlusOutlined />{{ t('role.addRole') }}</a-button>
+        <a-tooltip :title="t('role.addRole')">
+          <a-button :aria-label="t('role.addRole')" @click="handleAdd">
+            <PlusCircleTwoTone two-tone-color="#52c41a" />
+          </a-button>
+        </a-tooltip>
+        <a-tooltip :title="t('common.batchDelete')">
+          <a-button
+            :disabled="!selectedRowKeys.length"
+            :aria-label="t('common.batchDelete')"
+            @click="handleBatchDelete"
+          >
+            <MinusCircleTwoTone two-tone-color="#ff4d4f" />
+          </a-button>
+        </a-tooltip>
       </a-space>
-    </template>
+    </div>
     <a-table
       row-key="rolId"
       :columns="columns"
@@ -26,13 +36,39 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space>
-            <a-button type="link" size="small" @click="handleEdit(record)">{{ t('common.edit') }}</a-button>
-            <a-button type="link" size="small" @click="handlePermission(record)">{{ t('role.permissions') }}</a-button>
-            <a-button
-type="link"
-size="small"
-danger
-@click="handleDelete(record)">{{ t('common.delete') }}</a-button>
+            <a-tooltip :title="t('common.edit')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('common.edit')"
+                @click="handleEdit(record)"
+              >
+                <EditTwoTone two-tone-color="#1677ff" />
+              </a-button>
+            </a-tooltip>
+            <a-tooltip :title="t('role.permissions')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('role.permissions')"
+                @click="handlePermission(record)"
+              >
+                <SafetyCertificateTwoTone two-tone-color="#1677ff" />
+              </a-button>
+            </a-tooltip>
+            <a-tooltip :title="t('common.delete')">
+              <a-button
+                type="text"
+                size="small"
+                shape="circle"
+                :aria-label="t('common.delete')"
+                @click="handleDelete(record)"
+              >
+                <DeleteTwoTone two-tone-color="#ff4d4f" />
+              </a-button>
+            </a-tooltip>
           </a-space>
         </template>
       </template>
@@ -45,7 +81,13 @@ danger
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  MinusCircleTwoTone,
+  PlusCircleTwoTone,
+  SafetyCertificateTwoTone,
+} from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
 
@@ -78,7 +120,7 @@ const columns = computed(() => [
   { title: t('role.type'), key: 'isPub', width: 90 },
   { title: t('role.description'), dataIndex: 'rolDesc', key: 'rolDesc' },
   { title: t('role.createdAt'), dataIndex: 'creTm', key: 'creTm', width: 180 },
-  { title: t('role.actions'), key: 'action', width: 200, fixed: 'right' as const },
+  { title: t('role.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
 
 const rowSelection = computed(() => ({
@@ -155,3 +197,10 @@ const handleSaved = async () => {
 
 onMounted(fetchRoles)
 </script>
+
+<style lang="scss" scoped>
+.table-toolbar {
+  margin-bottom: 16px;
+  text-align: left;
+}
+</style>
