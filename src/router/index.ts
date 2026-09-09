@@ -91,6 +91,15 @@ const constantRoutes: RouteRecordRaw[] = [
           icon: 'MenuOutlined',
         },
       },
+      {
+        path: 'task',
+        name: 'Task',
+        component: () => import('@/views/system/task/index.vue'),
+        meta: {
+          title: '任务管理',
+          icon: 'ScheduleOutlined',
+        },
+      },
     ],
   },
   {

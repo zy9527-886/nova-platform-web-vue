@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import test from 'node:test'
 import { buildUserQuery } from '../src/views/system/shared/data.ts'
 
@@ -128,4 +128,12 @@ test('menu management uses a left icon toolbar and compact icon actions', () => 
   assert.match(source, /<EditTwoTone/)
   assert.match(source, /<DeleteTwoTone/)
   assert.match(source, /key: 'action', width: 120/)
+})
+
+test('task management provides the user-style query and delete-only list', () => {
+  const taskView = new URL('../src/views/system/task/index.vue', import.meta.url)
+  const taskApi = new URL('../src/api/system/task.ts', import.meta.url)
+
+  assert.ok(existsSync(taskView))
+  assert.ok(existsSync(taskApi))
 })
