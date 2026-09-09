@@ -72,6 +72,16 @@ const constantRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'org',
+        name: 'Organization',
+        component: () => import('@/views/system/org/index.vue'),
+        meta: {
+          title: '组织机构管理',
+          titleKey: 'route.org',
+          icon: 'ApartmentOutlined',
+        },
+      },
+      {
         path: 'menu',
         name: 'Menu',
         component: () => import('@/views/system/menu/index.vue'),

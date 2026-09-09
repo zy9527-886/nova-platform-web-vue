@@ -1,15 +1,45 @@
 <template>
   <div class="user-management">
     <a-card :bordered="false" class="search-card">
-      <a-form layout="horizontal">
+      <a-form class="system-search-form" layout="horizontal">
         <div class="search-grid">
-          <div v-for="field in inputFields" :key="field.key" class="search-field">
-            <a-form-item :label="field.label" class="filter-item">
+          <div class="search-field">
+            <a-form-item :label="t('user.username')" class="filter-item">
               <a-input
-                v-model:value="searchForm[field.key]"
+                v-model:value="searchForm.userNm"
                 class="filter-control"
                 allow-clear
-                :placeholder="t('common.input', { label: field.label })"
+                :placeholder="t('common.input', { label: t('user.username') })"
+              />
+            </a-form-item>
+          </div>
+          <div class="search-field">
+            <a-form-item :label="t('user.organization')" class="filter-item">
+              <a-input
+                v-model:value="searchForm.orgCd"
+                class="filter-control"
+                allow-clear
+                :placeholder="t('common.input', { label: t('user.organization') })"
+              />
+            </a-form-item>
+          </div>
+          <div class="search-field">
+            <a-form-item :label="t('user.realName')" class="filter-item">
+              <a-input
+                v-model:value="searchForm.realNm"
+                class="filter-control"
+                allow-clear
+                :placeholder="t('common.input', { label: t('user.realName') })"
+              />
+            </a-form-item>
+          </div>
+          <div class="search-field">
+            <a-form-item :label="t('user.phone')" class="filter-item">
+              <a-input
+                v-model:value="searchForm.tel"
+                class="filter-control"
+                allow-clear
+                :placeholder="t('common.input', { label: t('user.phone') })"
               />
             </a-form-item>
           </div>
@@ -29,10 +59,11 @@
           <div class="search-field">
             <a-form-item :label="t('user.role')" class="filter-item">
               <a-select
-                v-model:value="searchForm.roleId"
+                v-model:value="searchForm.roleIds"
                 class="filter-control"
                 :options="roleOptions"
                 :loading="rolesLoading"
+                mode="multiple"
                 allow-clear
                 show-search
                 option-filter-prop="label"
@@ -81,10 +112,14 @@
             </a-button>
           </a-tooltip>
         </a-space>
+        <TableColumnSetting
+          v-model:visible-keys="visibleColumnKeys"
+          :columns="columns"
+        />
       </div>
       <a-table
         row-key="userId"
-        :columns="columns"
+        :columns="visibleColumns"
         :data-source="dataSource"
         :loading="loading"
         :pagination="pagination"
@@ -178,6 +213,7 @@ import { useAppStore } from '@/stores/app'
 import { listRoles } from '@/api/system/role'
 import { getUser, pageUsers, removeUser, removeUsers, type SysUser } from '@/api/system/user'
 import { buildUserQuery, pageAfterDelete } from '@/views/system/shared/data'
+import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import UserModal from './components/UserModal.vue'
 
 const { t } = useI18n()
@@ -192,19 +228,14 @@ const detailMode = ref(false)
 const currentRecord = ref<SysUser | null>(null)
 const rolesLoading = ref(false)
 const roleOptions = ref<{ label: string; value: string }[]>([])
-const inputFields = computed(() => [
-  { key: 'userNm' as const, label: t('user.username') },
-  { key: 'idNo' as const, label: t('user.idNo') },
-  { key: 'realNm' as const, label: t('user.realName') },
-  { key: 'tel' as const, label: t('user.phone') },
-])
 const searchForm = reactive({
   userNm: '',
   idNo: '',
   realNm: '',
   tel: '',
   stus: undefined as string | undefined,
-  roleId: undefined as string | undefined,
+  orgCd: '',
+  roleIds: [] as string[],
 })
 const pagination = reactive({
   current: 1,
@@ -225,6 +256,10 @@ const columns = computed(() => [
   { title: t('user.createdAt'), dataIndex: 'creTm', key: 'creTm', width: 180 },
   { title: t('user.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
+const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(column.key ?? column.dataIndex)))
+const visibleColumns = computed(() =>
+  columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
+)
 
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,
@@ -270,7 +305,8 @@ const handleReset = () => {
     realNm: '',
     tel: '',
     stus: undefined,
-    roleId: undefined,
+    orgCd: '',
+    roleIds: [],
   })
   handleSearch()
 }
@@ -350,7 +386,7 @@ onMounted(() => {
 
 .search-grid {
   display: grid;
-  grid-template-columns: repeat(3, 260px) minmax(140px, 1fr);
+  grid-template-columns: repeat(3, var(--system-search-field-width)) minmax(140px, 1fr);
   column-gap: 16px;
   align-items: start;
 }
@@ -374,10 +410,6 @@ onMounted(() => {
   grid-area: 2 / 3;
 }
 
-.search-field {
-  width: 260px;
-}
-
 .search-actions {
   display: flex;
   align-items: flex-start;
@@ -386,26 +418,13 @@ onMounted(() => {
   padding-bottom: 24px;
 }
 
-.filter-item :deep(.ant-form-item-label) {
-  flex: 0 0 72px;
-}
-
-.filter-item :deep(.ant-form-item-control) {
-  flex: 0 0 180px;
-  max-width: 180px;
-}
-
-.filter-control {
-  width: 100%;
-}
-
 .primary-icon {
   color: var(--app-primary-color);
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
   .search-grid {
-    grid-template-columns: repeat(2, 260px) minmax(140px, 1fr);
+    grid-template-columns: repeat(2, var(--system-search-field-width)) minmax(140px, 1fr);
   }
 
   .search-field:nth-child(1) {
@@ -441,11 +460,6 @@ onMounted(() => {
   .search-actions {
     grid-area: auto;
     width: 100%;
-  }
-
-  .filter-item :deep(.ant-form-item-control) {
-    flex: 1 1 auto;
-    max-width: none;
   }
 }
 </style>

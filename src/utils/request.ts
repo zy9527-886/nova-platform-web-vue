@@ -1,4 +1,9 @@
-import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import axios, {
+  type AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios'
 import { message } from 'ant-design-vue'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -13,6 +18,9 @@ NProgress.configure({ showSpinner: false })
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 30000,
+  // Authentication uses the Authorization header, so Axios does not need to
+  // read document.cookie for an XSRF token on every request.
+  xsrfCookieName: '',
 })
 
 // 请求拦截器
@@ -25,7 +33,7 @@ service.interceptors.request.use(
     }
     return config
   },
-  (error: any) => {
+  (error: unknown) => {
     NProgress.done()
     return Promise.reject(error)
   },
@@ -53,7 +61,7 @@ service.interceptors.response.use(
       return res
     }
   },
-  (error: any) => {
+  (error: AxiosError) => {
     NProgress.done()
     let errorMessage = t('common.requestFailed')
 

@@ -9,17 +9,17 @@
     :trigger-sub-menu-action="'hover'"
     @click="handleMenuClick"
   >
-    <template v-for="item in menuRoutes" :key="item.path">
-      <template v-if="shouldShowRoute(item)">
-        <a-sub-menu v-if="hasChildren(item)" :key="item.path">
+      <template v-for="item in menuRoutes" :key="item.menuId">
+        <template v-if="shouldShowRoute(item)">
+          <a-sub-menu v-if="hasChildren(item)" :key="item.path">
           <template #icon>
-            <component :is="getIcon(item.meta?.icon)" v-if="item.meta?.icon" />
+            <component :is="getIcon(item.icon)" v-if="item.icon" />
           </template>
           <template #title>{{ routeTitle(item) }}</template>
-          <template v-for="child in getValidChildren(item)" :key="child.fullPath || child.path">
-            <a-menu-item v-if="shouldShowRoute(child)" :key="child.fullPath || child.path">
+          <template v-for="child in getValidChildren(item)" :key="child.menuId">
+            <a-menu-item v-if="shouldShowRoute(child)" :key="child.path">
               <template #icon>
-                <component :is="getIcon(child.meta?.icon)" v-if="child.meta?.icon" />
+                <component :is="getIcon(child.icon)" v-if="child.icon" />
               </template>
               <span>{{ routeTitle(child) }}</span>
             </a-menu-item>
@@ -27,7 +27,7 @@
         </a-sub-menu>
         <a-menu-item v-else :key="item.path">
           <template #icon>
-            <component :is="getIcon(item.meta?.icon)" v-if="item.meta?.icon" />
+            <component :is="getIcon(item.icon)" v-if="item.icon" />
           </template>
           {{ routeTitle(item) }}
         </a-menu-item>
@@ -38,79 +38,46 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, type Component } from 'vue'
-import {
-  useRoute,
-  useRouter,
-  type RouteRecordNormalized,
-  type RouteLocationMatched,
-} from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import * as Icons from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
+import { useUserStore } from '@/stores/user'
 
 const currentRoute = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
+const userStore = useUserStore()
 const { t } = useI18n()
 
-// 扩展一 个 fullPath 字段，方便菜单使用
-interface AppRoute extends RouteRecordNormalized {
-  fullPath?: string
+interface AppMenu {
+  menuId: string
+  menuNm: string
+  path: string
+  icon?: string
+  isDsp?: number | string
+  children?: AppMenu[]
 }
 
 const collapsed = computed(() => appStore.collapsed)
 const menuTheme = computed(() => (appStore.theme === 'light' ? 'light' : 'dark'))
 
-// 获取路由列表（过滤掉登录和404页面）
-const menuRoutes = computed<AppRoute[]>(() => {
-  return router.getRoutes().filter((r) => {
-    // 过滤掉登录页、404页
-    if (r.path === '/login' || r.path === '/:pathMatch(.*)*') return false
-    // 只显示有 children 且有 meta 的路由（布局路由）
-    return !!r.meta && !!r.children && r.children.length > 0
-  })
-})
+const menuRoutes = computed<AppMenu[]>(() => userStore.menus)
 
-// 判断路由是否应该显示
-const shouldShowRoute = (r: AppRoute): boolean => {
-  if (!r.meta) return true
-  return !r.meta.hidden
-}
+const shouldShowRoute = (menu: AppMenu) => menu.isDsp !== 0 && menu.isDsp !== '0'
 
-// 判断路由是否有有效的子路由
-const hasChildren = (r: AppRoute): boolean => {
-  return !!r.children && r.children.length > 0
-}
+const hasChildren = (menu: AppMenu) => !!menu.children?.length
 
-// 获取有效的子路由
-const getValidChildren = (r: AppRoute): AppRoute[] => {
-  if (!r.children) return []
-  return r.children
-    .filter((child) => !child.redirect)
-    .map((child) => {
-      // 确保子路由有完整路径
-      if (child.path && !child.path.startsWith('/')) {
-        ;(child as AppRoute).fullPath = r.path === '/' ? `/${child.path}` : `${r.path}/${child.path}`
-      } else {
-        ;(child as AppRoute).fullPath = child.path
-      }
-      return child as AppRoute
-    })
-}
+const getValidChildren = (menu: AppMenu) => menu.children?.filter(shouldShowRoute) ?? []
 
 const selectedKeys = ref<string[]>([currentRoute.path])
 const openKeys = ref<string[]>([])
 
-// 根据当前路由计算需要展开的父级菜单 key
 const getParentOpenKey = (): string[] => {
-  const matched = currentRoute.matched as RouteLocationMatched[]
-  if (matched.length > 1) {
-    const parentRoute = matched.find((m) => m.children && m.children.length > 0)
-    if (parentRoute) {
-      return [parentRoute.path]
-    }
-  }
-  return []
+  const parent = menuRoutes.value.find(menu =>
+    menu.children?.some(child => child.path === currentRoute.path),
+  )
+  return parent ? [parent.path] : []
 }
 
 // 监听路由变化
@@ -140,10 +107,7 @@ const getIcon = (iconName?: unknown): Component | null => {
   return iconsMap[iconName] || null
 }
 
-const routeTitle = (route: AppRoute) => {
-  const titleKey = route.meta?.titleKey
-  return typeof titleKey === 'string' ? t(titleKey) : route.meta?.title || route.name
-}
+const routeTitle = (menu: AppMenu) => menu.menuNm || t('common.noData')
 
 // 菜单点击
 const handleMenuClick = ({ key }: { key: string }) => {

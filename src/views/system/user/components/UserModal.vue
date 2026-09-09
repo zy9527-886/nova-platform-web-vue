@@ -35,7 +35,16 @@ ref="formRef"
         <a-input v-model:value="formData.tel" maxlength="16" :readonly="readonly" />
       </a-form-item>
       <a-form-item :label="t('user.organization')" name="orgCd">
-        <a-input v-model:value="formData.orgCd" maxlength="32" :readonly="readonly" />
+        <a-tree-select
+          v-model:value="formData.orgCd"
+          :tree-data="orgTreeData"
+          :loading="orgTreeLoading"
+          show-search
+          allow-clear
+          tree-node-filter-prop="title"
+          :placeholder="t('common.select', { label: t('user.organization') })"
+          :disabled="readonly"
+        />
       </a-form-item>
       <a-form-item :label="t('user.role')" name="roleIds">
         <a-select
@@ -78,6 +87,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { message, type FormInstance } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
 
+import { getOrganizationTree, type SysOrgTree } from '@/api/system/org'
 import { listRoles } from '@/api/system/role'
 import { saveUser, type SysUser } from '@/api/system/user'
 import { toUserRoleList } from '@/views/system/shared/data'
@@ -99,6 +109,9 @@ const loading = ref(false)
 const rolesLoading = ref(false)
 const roles = ref<{ rolId: string; rolNm: string }[]>([])
 const roleOptions = computed(() => roles.value.map(role => ({ label: role.rolNm, value: role.rolId })))
+type OrgTreeOption = { title: string; value: string; children?: OrgTreeOption[] }
+const orgTreeLoading = ref(false)
+const orgTreeData = ref<OrgTreeOption[]>([])
 
 const formData = reactive({
   userNm: '',
@@ -134,12 +147,31 @@ const fillForm = () => {
   })
 }
 
+const toOrgTreeData = (items: SysOrgTree[]): OrgTreeOption[] =>
+  items.map(item => ({
+    title: item.orgNm,
+    value: item.orgCd,
+    children: item.children?.length ? toOrgTreeData(item.children) : undefined,
+  }))
+
+const fetchOrganizationTree = async () => {
+  orgTreeLoading.value = true
+  try {
+    orgTreeData.value = toOrgTreeData((await getOrganizationTree()).data)
+  } catch {
+    message.error(t('user.loadFailed'))
+  } finally {
+    orgTreeLoading.value = false
+  }
+}
+
 watch(
   () => props.open,
   async open => {
     if (!open) return
     fillForm()
     formRef.value?.clearValidate()
+    fetchOrganizationTree()
     rolesLoading.value = true
     try {
       roles.value = await listRoles()

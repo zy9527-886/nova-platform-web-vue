@@ -17,10 +17,14 @@
           </a-button>
         </a-tooltip>
       </a-space>
+      <TableColumnSetting
+        v-model:visible-keys="visibleColumnKeys"
+        :columns="columns"
+      />
     </div>
     <a-table
       row-key="rolId"
-      :columns="columns"
+      :columns="visibleColumns"
       :data-source="dataSource"
       :loading="loading"
       :pagination="pagination"
@@ -94,6 +98,7 @@ import { useAppStore } from '@/stores/app'
 
 import { getRole, pageRoles, removeRole, removeRoles, type SysRole } from '@/api/system/role'
 import { pageAfterDelete } from '@/views/system/shared/data'
+import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import RoleModal from './components/RoleModal.vue'
 import RolePermissionModal from './components/RolePermissionModal.vue'
 
@@ -125,6 +130,10 @@ const columns = computed(() => [
   { title: t('role.createdAt'), dataIndex: 'creTm', key: 'creTm', width: 180 },
   { title: t('role.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
+const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(column.key ?? column.dataIndex)))
+const visibleColumns = computed(() =>
+  columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
+)
 
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,

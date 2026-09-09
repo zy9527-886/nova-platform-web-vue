@@ -20,6 +20,50 @@ body {
   height: 100%;
 }
 
+:root {
+  --system-search-label-width: 96px;
+  --system-search-control-width: 180px;
+  --system-search-field-width: 284px;
+}
+
+.system-search-form .search-field {
+  width: var(--system-search-field-width);
+}
+
+.system-search-form .filter-item .ant-form-item-row {
+  flex-wrap: nowrap;
+}
+
+.system-search-form .filter-item .ant-form-item-label {
+  flex: 0 0 var(--system-search-label-width);
+}
+
+.system-search-form .filter-item .ant-form-item-control {
+  flex: 0 0 var(--system-search-control-width);
+  max-width: var(--system-search-control-width);
+}
+
+.system-search-form .filter-control {
+  width: 100%;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+  .system-search-form .search-field {
+    width: 100%;
+  }
+
+  .system-search-form .filter-item .ant-form-item-control {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+}
+
 // 滚动条样式
 ::-webkit-scrollbar {
   width: 6px;

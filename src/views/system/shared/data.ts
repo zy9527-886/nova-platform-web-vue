@@ -52,7 +52,8 @@ export interface UserSearchFilters {
   realNm: string
   tel: string
   stus?: string
-  roleId?: string
+  orgCd?: string
+  roleIds?: string[]
 }
 
 export const buildUserQuery = (filters: UserSearchFilters): SysUserQuery => ({
@@ -61,5 +62,6 @@ export const buildUserQuery = (filters: UserSearchFilters): SysUserQuery => ({
   realNm: filters.realNm || undefined,
   tel: filters.tel || undefined,
   stus: filters.stus,
-  userRolList: filters.roleId ? toUserRoleList([filters.roleId]) : undefined,
+  orgCd: filters.orgCd || undefined,
+  userRolList: filters.roleIds ? toUserRoleList(filters.roleIds) : undefined,
 })

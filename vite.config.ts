@@ -21,9 +21,14 @@ export default defineConfig({
     open: false,
     proxy: {
       '/api': {
-        target: 'http://localhost:8866',
+        target: 'http://127.0.0.1:8866',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/auth': {
+        target: 'http://127.0.0.1:8867/auth',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/auth/, ''),
       },
     },
   },

@@ -61,7 +61,7 @@ block
         </a-form>
 
         <div class="login-footer">
-          <p>{{ t('login.demo') }}：<span>admin</span> / <span>admin123</span></p>
+          <p>{{ t('login.demo') }}：<span>admin</span> / <span>Aa123456.</span></p>
         </div>
       </div>
     </div>
@@ -84,7 +84,7 @@ const loading = ref(false)
 const rememberMe = ref(false)
 const loginForm = ref({
   username: 'admin',
-  password: 'admin123',
+  password: 'Aa123456.',
 })
 
 const rules = computed(() => ({

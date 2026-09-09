@@ -177,8 +177,8 @@ const handleSettings = () => {
   router.push('/settings')
 }
 
-const handleLogout = () => {
-  userStore.logout()
+const handleLogout = async () => {
+  await userStore.logoutAction()
 }
 
 const showThemeDrawer = () => {

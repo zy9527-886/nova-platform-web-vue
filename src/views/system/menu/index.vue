@@ -18,11 +18,15 @@
           </a-button>
         </a-tooltip>
       </a-space>
+      <TableColumnSetting
+        v-model:visible-keys="visibleColumnKeys"
+        :columns="columns"
+      />
     </div>
 
     <a-table
       row-key="menuId"
-      :columns="columns"
+      :columns="visibleColumns"
       :data-source="dataSource"
       :loading="loading"
       :pagination="false"
@@ -179,6 +183,7 @@ import { useAppStore } from '@/stores/app'
 
 import { getMenu, listMenus, removeMenu, saveMenu, type SysMenu } from '@/api/menu'
 import IconPicker from '@/components/IconPicker/index.vue'
+import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import { buildMenuTree, collectDescendantIds } from '@/views/system/shared/data'
 
 const { t } = useI18n()
@@ -225,6 +230,10 @@ const columns = computed(() => [
   { title: t('menu.display'), key: 'isDsp', width: 80 },
   { title: t('menu.actions'), key: 'action', width: 120, fixed: 'right' as const },
 ])
+const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(column.key ?? column.dataIndex)))
+const visibleColumns = computed(() =>
+  columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
+)
 
 const getIcon = (name?: string) => (name ? (Icons as Record<string, any>)[name] || MenuOutlined : null)
 const allParentIds = computed(() => flatMenus.value.filter(menu => menu.typ === '1').map(menu => menu.menuId))

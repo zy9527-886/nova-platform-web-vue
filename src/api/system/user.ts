@@ -27,6 +27,7 @@ export interface SysUserQuery {
   realNm?: string
   tel?: string
   stus?: string
+  orgCd?: string
   userRolList?: SysUserRole[]
 }
 

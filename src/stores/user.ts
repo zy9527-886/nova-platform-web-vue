@@ -1,11 +1,22 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { login, getUserInfo as getUserInfoApi } from '@/api/user'
-import { setToken, removeToken, setUserInfo, removeUserInfo, getToken, getUserInfo } from '@/utils/auth'
+import { getResources, login, logout as logoutApi, type AuthMenu, type AuthResources, type AuthUser } from '@/api/auth'
+import { encryptLoginPassword } from '@/utils/crypto'
+import {
+  getAuthResources,
+  getToken,
+  getUserInfo,
+  removeAuthResources,
+  removeToken,
+  removeUserInfo,
+  setAuthResources,
+  setToken,
+  setUserInfo,
+} from '@/utils/auth'
 import { useRouter } from 'vue-router'
 
 export interface UserInfo {
-  id: number
+  id: string
   username: string
   nickname: string
   email?: string
@@ -14,69 +25,81 @@ export interface UserInfo {
   permissions: string[]
 }
 
+const toUserInfo = (authUser: AuthUser, permissions: string[] = []): UserInfo => ({
+  id: authUser.userId,
+  username: authUser.userNm,
+  nickname: authUser.realNm || authUser.rmk || authUser.userNm,
+  roles: authUser.roles.map(role => role.rolCd || role.rolId),
+  permissions,
+})
+
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(getToken() || '')
-  const userInfo = ref<UserInfo | null>(null)
+  const userInfo = ref<UserInfo | null>(getUserInfo() as UserInfo | null)
+  const resources = ref<AuthResources | null>(getAuthResources() as AuthResources | null)
+  const menus = ref<AuthMenu[]>(resources.value?.menus ?? [])
   const router = useRouter()
 
-  // 登录
   const loginAction = async (username: string, password: string) => {
-    try {
-      const res = await login({ username, password })
-      if (res.data?.token) {
-        token.value = res.data.token
-        setToken(res.data.token)
-        
-        // 获取用户信息
-        await getUserInfoAction()
-        
-        return Promise.resolve(res)
-      }
-    } catch (error) {
-      return Promise.reject(error)
-    }
+    const res = await login({ username, password: encryptLoginPassword(password) })
+    const loginData = res.data
+    token.value = loginData.accessToken
+    setToken(loginData.accessToken)
+    userInfo.value = toUserInfo(loginData.authUser)
+    setUserInfo(userInfo.value)
+    await getResourcesAction()
+    return res
   }
 
-  // 获取用户信息
-  const getUserInfoAction = async () => {
-    try {
-      const res = await getUserInfoApi()
-      if (res.data) {
-        userInfo.value = res.data
-        setUserInfo(res.data)
-      }
-    } catch (error) {
-      console.error('获取用户信息失败', error)
+  const getResourcesAction = async () => {
+    const res = await getResources()
+    resources.value = res.data
+    menus.value = res.data.menus ?? []
+    setAuthResources(res.data)
+    if (userInfo.value) {
+      userInfo.value = { ...userInfo.value, permissions: (res.data.codes ?? []).flatMap(code => code.permCd ? [code.permCd] : []) }
+      setUserInfo(userInfo.value)
     }
+    return res.data
   }
 
-  // 登出
   const logout = () => {
     token.value = ''
     userInfo.value = null
+    resources.value = null
+    menus.value = []
     removeToken()
     removeUserInfo()
+    removeAuthResources()
     router.push('/login')
   }
 
-  // 初始化用户信息
+  const logoutAction = async () => {
+    try {
+      if (token.value) await logoutApi()
+    } finally {
+      logout()
+    }
+  }
+
   const initUserInfo = () => {
     if (token.value) {
-      const info = getUserInfo()
-      if (info) {
-        userInfo.value = info
-      } else {
-        getUserInfoAction()
-      }
+      userInfo.value = getUserInfo() as UserInfo | null
+      resources.value = getAuthResources() as AuthResources | null
+      menus.value = resources.value?.menus ?? []
+      if (!resources.value) void getResourcesAction()
     }
   }
 
   return {
     token,
     userInfo,
+    resources,
+    menus,
     loginAction,
-    getUserInfoAction,
+    getResourcesAction,
     logout,
+    logoutAction,
     initUserInfo,
   }
 })
