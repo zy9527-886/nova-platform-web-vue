@@ -12,7 +12,7 @@
       <div class="logo">
         <div class="logo-content">
           <img src="@/assets/images/logo.png" alt="Logo" class="logo-img" />
-          <h2 v-if="!collapsed" class="logo-text">Admin Pro</h2>
+          <h2 v-if="!collapsed" class="logo-text">nova</h2>
         </div>
       </div>
       <Menu />

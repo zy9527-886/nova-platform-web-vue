@@ -3,7 +3,7 @@
     <!-- 左上角 Logo -->
     <div class="top-logo">
       <img src="@/assets/images/logo.png" alt="Logo" class="logo-img" />
-      <span class="logo-text">Ant Admin Pro</span>
+      <span class="logo-text">nova</span>
     </div>
 
     <div class="login-wrapper">
