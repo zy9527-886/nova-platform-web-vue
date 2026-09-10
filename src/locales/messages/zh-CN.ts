@@ -1,6 +1,8 @@
 export default {
   common: {
     search: '查询',
+    expandSearch: '展开查询',
+    collapseSearch: '收起查询',
     reset: '重置',
     add: '新增',
     edit: '编辑',
@@ -35,7 +37,8 @@ export default {
     connectionError: '连接错误 {status}',
   },
   layout: {
-    styleSettings: '整体风格设置',
+    styleSettings: '风格设置',
+    settings: '设置',
     sidebarStyle: '整体风格设置（侧边栏）',
     sidebarStyleDesc: '仅影响左侧菜单区域：亮色 / 暗色',
     light: '亮色',

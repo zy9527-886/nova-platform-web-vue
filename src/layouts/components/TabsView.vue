@@ -237,7 +237,7 @@ const handleMenuClick = (e: { key: string }, targetPath: string) => {
 
   :deep(.ant-tabs) {
     .ant-tabs-nav {
-      margin-top: 5px;
+      margin: 5px 0 0;
     }
 
     .ant-tabs-tab {

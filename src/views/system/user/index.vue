@@ -1,12 +1,13 @@
 <template>
   <div class="user-management">
-    <a-card :bordered="false" class="search-card">
+    <SearchPanel>
       <a-form class="system-search-form" layout="horizontal">
         <div class="search-grid">
           <div class="search-field">
             <a-form-item :label="t('user.username')" class="filter-item">
               <a-input
                 v-model:value="searchForm.userNm"
+                name="userNm"
                 class="filter-control"
                 allow-clear
                 :placeholder="t('common.input', { label: t('user.username') })"
@@ -17,6 +18,7 @@
             <a-form-item :label="t('user.organization')" class="filter-item">
               <a-input
                 v-model:value="searchForm.orgCd"
+                name="orgCd"
                 class="filter-control"
                 allow-clear
                 :placeholder="t('common.input', { label: t('user.organization') })"
@@ -27,6 +29,7 @@
             <a-form-item :label="t('user.realName')" class="filter-item">
               <a-input
                 v-model:value="searchForm.realNm"
+                name="realNm"
                 class="filter-control"
                 allow-clear
                 :placeholder="t('common.input', { label: t('user.realName') })"
@@ -37,6 +40,7 @@
             <a-form-item :label="t('user.phone')" class="filter-item">
               <a-input
                 v-model:value="searchForm.tel"
+                name="tel"
                 class="filter-control"
                 allow-clear
                 :placeholder="t('common.input', { label: t('user.phone') })"
@@ -47,6 +51,7 @@
             <a-form-item :label="t('user.status')" class="filter-item">
               <a-select
                 v-model:value="searchForm.stus"
+                name="stus"
                 class="filter-control"
                 allow-clear
                 :placeholder="t('common.select', { label: t('user.status') })"
@@ -60,6 +65,7 @@
             <a-form-item :label="t('user.role')" class="filter-item">
               <a-select
                 v-model:value="searchForm.roleIds"
+                name="roleIds"
                 class="filter-control"
                 :options="roleOptions"
                 :loading="rolesLoading"
@@ -93,9 +99,9 @@
           </div>
         </div>
       </a-form>
-    </a-card>
+    </SearchPanel>
 
-    <a-card :bordered="false">
+    <a-card :bordered="false" class="system-list-card">
       <div class="table-toolbar">
         <a-space>
           <a-tooltip :title="t('user.addUser')">
@@ -121,7 +127,7 @@
       </div>
       <a-table
         row-key="userId"
-        :columns="visibleColumns"
+        :columns="resizableColumns"
         :data-source="dataSource"
         :loading="loading"
         :pagination="pagination"
@@ -219,7 +225,9 @@ import { listRoles } from '@/api/system/role'
 import { getUser, pageUsers, removeUser, removeUsers, type SysUser } from '@/api/system/user'
 import { buildUserQuery, pageAfterDelete } from '@/views/system/shared/data'
 import { usePermission } from '@/composables/usePermission'
+import { useResizableColumns } from '@/composables/useResizableColumns'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
 import UserModal from './components/UserModal.vue'
 
 const { t } = useI18n()
@@ -267,6 +275,7 @@ const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(colum
 const visibleColumns = computed(() =>
   columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
 )
+const { resizableColumns } = useResizableColumns(visibleColumns, 'system-user-column-widths')
 
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,
@@ -387,7 +396,7 @@ onMounted(() => {
 }
 
 .table-toolbar {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   text-align: left;
 }
 
@@ -422,7 +431,7 @@ onMounted(() => {
   align-items: flex-start;
   justify-content: flex-end;
   grid-area: 2 / 4;
-  padding-bottom: 24px;
+  padding-bottom: 0;
 }
 
 .primary-icon {

@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false">
+  <a-card :bordered="false" class="system-list-card">
     <div class="table-toolbar">
       <a-space>
         <a-tooltip :title="t('menu.addMenu')">
@@ -26,7 +26,7 @@
 
     <a-table
       row-key="menuId"
-      :columns="visibleColumns"
+      :columns="resizableColumns"
       :data-source="dataSource"
       :loading="loading"
       :pagination="false"
@@ -188,6 +188,7 @@ import IconPicker from '@/components/IconPicker/index.vue'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import { buildMenuTree, collectDescendantIds } from '@/views/system/shared/data'
 import { usePermission } from '@/composables/usePermission'
+import { useResizableColumns } from '@/composables/useResizableColumns'
 
 const { t } = useI18n()
 const { hasPermission } = usePermission()
@@ -238,6 +239,7 @@ const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(colum
 const visibleColumns = computed(() =>
   columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
 )
+const { resizableColumns } = useResizableColumns(visibleColumns, 'system-menu-column-widths')
 
 const getIcon = (name?: string) => (name ? (Icons as Record<string, any>)[name] || MenuOutlined : null)
 const allParentIds = computed(() => flatMenus.value.filter(menu => menu.typ === '1').map(menu => menu.menuId))
@@ -346,7 +348,7 @@ onMounted(fetchMenus)
 
 <style lang="scss" scoped>
 .table-toolbar {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   text-align: left;
 }
 </style>

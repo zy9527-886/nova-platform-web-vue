@@ -53,6 +53,75 @@ body {
   justify-content: space-between;
 }
 
+.search-panel {
+  position: relative;
+  margin-bottom: 8px;
+
+  .ant-card-body {
+    padding: 8px 16px;
+  }
+}
+
+.search-panel--collapsed .ant-card-body {
+  min-height: 32px;
+  padding: 2px 16px;
+}
+
+.search-panel__content {
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.search-panel__toggle {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.search-panel--collapsed .search-panel__toggle {
+  top: 4px;
+}
+
+.system-search-form .ant-form-item {
+  margin-bottom: 8px;
+}
+
+.system-list-card .ant-card-body {
+  padding: 8px 16px;
+}
+
+.system-list-card .table-toolbar {
+  margin-bottom: 8px;
+}
+
+.system-list-card .ant-table-pagination.ant-pagination {
+  margin: 8px 0 0;
+}
+
+.system-list-card .ant-table-thead > tr > th,
+.system-list-card .ant-table-tbody > tr > td {
+  padding: 8px 12px;
+}
+
+.system-list-card .ant-table-thead > tr > th {
+  position: relative;
+  user-select: none;
+}
+
+.system-list-card .ant-table-thead > tr > th::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  content: '';
+}
+
 @media (max-width: 767px) {
   .system-search-form .search-field {
     width: 100%;

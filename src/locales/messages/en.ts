@@ -1,6 +1,8 @@
 export default {
   common: {
     search: 'Search',
+    expandSearch: 'Show filters',
+    collapseSearch: 'Hide filters',
     reset: 'Reset',
     add: 'Add',
     edit: 'Edit',
@@ -36,6 +38,7 @@ export default {
   },
   layout: {
     styleSettings: 'Appearance settings',
+    settings: 'Settings',
     sidebarStyle: 'Sidebar appearance',
     sidebarStyleDesc: 'Changes the sidebar only: light or dark',
     light: 'Light',

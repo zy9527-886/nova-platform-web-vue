@@ -69,6 +69,7 @@
         <div class="section-desc">{{ t('layout.languageDesc') }}</div>
         <a-select
           :value="currentLocale"
+          name="locale"
           :options="localeOptions"
           style="width: 100%"
           @change="handleLocaleChange"

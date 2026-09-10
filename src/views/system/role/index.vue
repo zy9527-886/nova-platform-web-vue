@@ -1,5 +1,5 @@
 <template>
-  <a-card :bordered="false">
+  <a-card :bordered="false" class="system-list-card">
     <div class="table-toolbar">
       <a-space>
         <a-tooltip :title="t('role.addRole')">
@@ -25,7 +25,7 @@
     </div>
     <a-table
       row-key="rolId"
-      :columns="visibleColumns"
+      :columns="resizableColumns"
       :data-source="dataSource"
       :loading="loading"
       :pagination="pagination"
@@ -103,6 +103,7 @@ import { useAppStore } from '@/stores/app'
 import { getRole, pageRoles, removeRole, removeRoles, type SysRole } from '@/api/system/role'
 import { pageAfterDelete } from '@/views/system/shared/data'
 import { usePermission } from '@/composables/usePermission'
+import { useResizableColumns } from '@/composables/useResizableColumns'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import RoleModal from './components/RoleModal.vue'
 import RolePermissionModal from './components/RolePermissionModal.vue'
@@ -140,6 +141,7 @@ const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(colum
 const visibleColumns = computed(() =>
   columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
 )
+const { resizableColumns } = useResizableColumns(visibleColumns, 'system-role-column-widths')
 
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,
@@ -218,7 +220,7 @@ onMounted(fetchRoles)
 
 <style lang="scss" scoped>
 .table-toolbar {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   text-align: left;
 }
 </style>

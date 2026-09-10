@@ -17,7 +17,7 @@
     </a-card>
 
     <div class="org-content">
-      <a-card :bordered="false" class="search-card">
+    <SearchPanel>
         <a-form class="system-search-form" layout="horizontal">
           <div class="search-grid">
             <div class="search-field">
@@ -93,9 +93,9 @@
             </div>
           </div>
         </a-form>
-      </a-card>
+    </SearchPanel>
 
-      <a-card :bordered="false">
+    <a-card :bordered="false" class="system-list-card">
         <div class="table-toolbar">
           <a-space>
             <a-tooltip :title="t('org.addOrg')">
@@ -121,7 +121,7 @@
         </div>
         <a-table
           row-key="orgId"
-          :columns="visibleColumns"
+        :columns="resizableColumns"
           :data-source="dataSource"
           :loading="loading"
           :pagination="pagination"
@@ -212,7 +212,9 @@ import {
 } from '@/api/system/org'
 import { pageAfterDelete } from '@/views/system/shared/data'
 import { usePermission } from '@/composables/usePermission'
+import { useResizableColumns } from '@/composables/useResizableColumns'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
 import OrgModal from './components/OrgModal.vue'
 
 const { t } = useI18n()
@@ -256,6 +258,7 @@ const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(colum
 const visibleColumns = computed(() =>
   columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))),
 )
+const { resizableColumns } = useResizableColumns(visibleColumns, 'system-org-column-widths')
 const rowSelection = computed(() => ({
   selectedRowKeys: selectedRowKeys.value,
   onChange: (keys: (string | number)[]) => (selectedRowKeys.value = keys.map(String)),
@@ -410,9 +413,8 @@ onMounted(() => Promise.all([fetchTree(), fetchOrganizations()]))
 .tree-card {
   min-height: 520px;
 }
-.search-card,
 .table-toolbar {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 .search-grid {
   display: grid;
@@ -427,7 +429,7 @@ onMounted(() => Promise.all([fetchTree(), fetchOrganizations()]))
   display: flex;
   grid-area: 2 / 3;
   justify-content: flex-end;
-  padding-bottom: 24px;
+  padding-bottom: 0;
 }
 .primary-icon {
   color: var(--app-primary-color);

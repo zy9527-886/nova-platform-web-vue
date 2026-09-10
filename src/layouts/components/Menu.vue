@@ -4,7 +4,6 @@
     v-model:open-keys="openKeys"
     mode="inline"
     :theme="menuTheme"
-    :inline-collapsed="collapsed"
     :selectable="true"
     :trigger-sub-menu-action="'hover'"
     @click="handleMenuClick"

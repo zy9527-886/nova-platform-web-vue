@@ -27,10 +27,11 @@ test('system list pages use the shared column display control', () => {
     '../src/views/system/role/index.vue',
     '../src/views/system/menu/index.vue',
     '../src/views/system/org/index.vue',
+    '../src/views/system/task/index.vue',
   ]) {
     const source = readFileSync(new URL(path, import.meta.url), 'utf8')
     assert.match(source, /<TableColumnSetting/)
-    assert.match(source, /:columns="visibleColumns"/)
+    assert.match(source, /:columns="resizableColumns"/)
     assert.doesNotMatch(source, /locked-keys/)
   }
 })
@@ -178,6 +179,88 @@ test('system action buttons are gated by resource permission codes', () => {
     const source = readFileSync(new URL(`../src/views/system/${view}/index.vue`, import.meta.url), 'utf8')
     assert.match(source, /usePermission/)
     for (const code of codes) assert.match(source, new RegExp(`hasPermission\\('${code}'\\)`))
+  }
+})
+
+test('compact layout moves header actions into the side-footer and removes the breadcrumb row', () => {
+  const layout = readFileSync(new URL('../src/layouts/BasicLayout.vue', import.meta.url), 'utf8')
+
+  assert.doesNotMatch(layout, /<a-layout-header/)
+  assert.doesNotMatch(layout, /<Breadcrumb\s*\/>/)
+  assert.match(layout, /class="sider-actions"/)
+  assert.match(layout, /class="sider-user"/)
+  assert.doesNotMatch(layout, /<div class="sider-action" @click="showThemeDrawer"/)
+  assert.match(layout, /key="settings"[\s\S]*key="theme" @click="showThemeDrawer"/)
+  assert.match(layout, /key="settings" @click="handleSettings"><UserOutlined \/>/)
+  assert.doesNotMatch(layout, /max-width: 86px/)
+  assert.match(layout, /\.sider-user\s*{[\s\S]*flex: 1/)
+  assert.match(layout, /\.sider-footer\s*{[\s\S]*padding: 0 8px[\s\S]*gap: 8px/)
+  assert.match(layout, /\.sider-actions\s*{[\s\S]*gap: 8px/)
+  assert.match(layout, /\.collapse-btn\s*{[\s\S]*flex: 0 0 40px/)
+  assert.match(layout, /<span>\{\{ t\('layout\.settings'\) \}\}<\/span>/)
+  assert.doesNotMatch(layout, /userInfo\?\.nickname \|\| userInfo\?\.username/)
+  for (const locale of [zhCN, zhTW, en, sw]) assert.equal(typeof locale.layout.settings, 'string')
+  assert.match(layout, /\.logo\s*{\s*height: 45px/)
+  assert.match(layout, /max-height: calc\(100vh - 45px - 56px\)/)
+})
+
+test('sider controls Menu collapsing without a duplicate inlineCollapsed prop', () => {
+  const layout = readFileSync(new URL('../src/layouts/BasicLayout.vue', import.meta.url), 'utf8')
+  const menu = readFileSync(new URL('../src/layouts/components/Menu.vue', import.meta.url), 'utf8')
+
+  assert.match(layout, /v-model:collapsed="collapsed"/)
+  assert.doesNotMatch(menu, /:inline-collapsed/)
+})
+
+test('active user-page form controls expose stable native names', () => {
+  const user = readFileSync(new URL('../src/views/system/user/index.vue', import.meta.url), 'utf8')
+  const themeDrawer = readFileSync(new URL('../src/layouts/components/ThemeDrawer.vue', import.meta.url), 'utf8')
+
+  for (const name of ['userNm', 'orgCd', 'realNm', 'tel', 'stus', 'roleIds']) {
+    assert.match(user, new RegExp(`name="${name}"`))
+  }
+  assert.match(themeDrawer, /name="locale"/)
+})
+
+test('system list pages use compact inline-toggle search panels and persistent resizable columns', () => {
+  const globalStyles = readFileSync(new URL('../src/styles/index.scss', import.meta.url), 'utf8')
+  const searchPanel = new URL('../src/components/SearchPanel/index.vue', import.meta.url)
+  const resizeColumns = new URL('../src/composables/useResizableColumns.ts', import.meta.url)
+  const layout = readFileSync(new URL('../src/layouts/BasicLayout.vue', import.meta.url), 'utf8')
+
+  assert.ok(existsSync(searchPanel))
+  assert.ok(existsSync(resizeColumns))
+  assert.match(readFileSync(searchPanel, 'utf8'), /const collapsed = ref\(true\)/)
+  assert.match(readFileSync(searchPanel, 'utf8'), /class="search-panel__toggle"/)
+  assert.match(readFileSync(searchPanel, 'utf8'), /UpOutlined/)
+  assert.doesNotMatch(readFileSync(searchPanel, 'utf8'), /t\('common\.search'\)/)
+  assert.match(readFileSync(resizeColumns, 'utf8'), /customHeaderCell/)
+  assert.match(readFileSync(resizeColumns, 'utf8'), /localStorage/)
+  assert.match(globalStyles, /\.system-list-card \.ant-card-body\s*{\s*padding: 8px 16px/)
+  assert.match(globalStyles, /\.system-list-card \.ant-table-pagination\.ant-pagination\s*{\s*margin: 8px 0 0/)
+  assert.match(globalStyles, /\.system-list-card \.ant-table-thead > tr > th/)
+  assert.match(globalStyles, /\.search-panel__content\s*{\s*padding-top: 0;\s*padding-left: 0/)
+  assert.match(globalStyles, /\.search-panel__toggle\s*{[\s\S]*right: 16px/)
+  assert.match(layout, /padding: 8px 24px 24px/)
+  assert.match(readFileSync(new URL('../src/layouts/components/TabsView.vue', import.meta.url), 'utf8'), /margin: 5px 0 0/)
+
+  for (const page of ['user', 'org', 'task']) {
+    const source = readFileSync(new URL(`../src/views/system/${page}/index.vue`, import.meta.url), 'utf8')
+    assert.match(source, /<SearchPanel>/)
+  }
+  for (const page of ['user', 'role', 'menu', 'org', 'task']) {
+    const source = readFileSync(new URL(`../src/views/system/${page}/index.vue`, import.meta.url), 'utf8')
+    assert.match(source, /useResizableColumns/)
+    assert.match(source, /:columns="resizableColumns"/)
+    assert.match(source, /table-toolbar[\s\S]{0,120}margin-bottom: 8px/)
+  }
+  for (const page of ['user', 'org', 'task']) {
+    const source = readFileSync(new URL(`../src/views/system/${page}/index.vue`, import.meta.url), 'utf8')
+    assert.match(source, /search-actions[\s\S]{0,160}padding-bottom: 0/)
+  }
+  for (const locale of [zhCN, zhTW, en, sw]) {
+    assert.equal(typeof locale.common.expandSearch, 'string')
+    assert.equal(typeof locale.common.collapseSearch, 'string')
   }
 })
 

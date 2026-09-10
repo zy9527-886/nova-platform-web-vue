@@ -21,62 +21,31 @@
           <MenuUnfoldOutlined v-if="collapsed" />
           <MenuFoldOutlined v-else />
         </div>
+        <div v-if="!collapsed" class="sider-actions">
+          <a-tooltip :title="isFullscreen ? t('layout.exitFullscreen') : t('layout.fullscreen')">
+            <div class="sider-action" @click="toggleFullscreen">
+              <FullscreenOutlined v-if="!isFullscreen" />
+              <FullscreenExitOutlined v-else />
+            </div>
+          </a-tooltip>
+          <a-dropdown>
+            <div class="sider-user">
+              <a-avatar :size="28" :src="userInfo?.avatar"><template #icon><UserOutlined /></template></a-avatar>
+              <span>{{ t('layout.settings') }}</span>
+            </div>
+            <template #overlay>
+                <a-menu>
+                <a-menu-item key="settings" @click="handleSettings"><UserOutlined /><span>{{ t('layout.personalSettings') }}</span></a-menu-item>
+                <a-menu-item key="theme" @click="showThemeDrawer"><SettingOutlined /><span>{{ t('layout.styleSettings') }}</span></a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="logout" @click="handleLogout"><LogoutOutlined /><span>{{ t('layout.logout') }}</span></a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
       </div>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header class="layout-header">
-        <div class="header-left">
-          <div class="trigger-wrapper" @click="toggleCollapsed">
-            <menu-unfold-outlined v-if="collapsed" class="trigger" />
-            <menu-fold-outlined v-else class="trigger" />
-          </div>
-          <Breadcrumb />
-        </div>
-        <div class="header-right">
-          <a-space :size="8">
-            <!-- 设置 -->
-            <a-tooltip :title="t('layout.styleSettings')">
-              <div class="header-action" @click="showThemeDrawer">
-                <SettingOutlined />
-              </div>
-            </a-tooltip>
-
-            <!-- 全屏 -->
-            <a-tooltip :title="isFullscreen ? t('layout.exitFullscreen') : t('layout.fullscreen')">
-              <div class="header-action" @click="toggleFullscreen">
-                <FullscreenOutlined v-if="!isFullscreen" />
-                <FullscreenExitOutlined v-else />
-              </div>
-            </a-tooltip>
-
-            <!-- 用户信息 -->
-            <a-dropdown>
-              <div class="user-info">
-                <a-avatar :size="32" :src="userInfo?.avatar" class="user-avatar">
-                  <template #icon><UserOutlined /></template>
-                </a-avatar>
-                <span class="username">{{
-                  userInfo?.nickname || userInfo?.username || t('layout.administrator')
-                }}</span>
-              </div>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item key="settings" @click="handleSettings">
-                    <SettingOutlined />
-                    <span>{{ t('layout.personalSettings') }}</span>
-                  </a-menu-item>
-                  <a-menu-divider />
-                  <a-menu-item key="logout" @click="handleLogout">
-                    <LogoutOutlined />
-                    <span>{{ t('layout.logout') }}</span>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </a-space>
-        </div>
-      </a-layout-header>
-
       <a-layout-content class="layout-content">
         <TabsView v-if="tabsList.length > 0" />
         <div class="content-wrapper">
@@ -88,9 +57,6 @@
         </div>
       </a-layout-content>
 
-      <a-layout-footer class="layout-footer">
-        <span>© {{ currentYear }} Ant Admin · Powered by Vue 3 + Ant Design Vue</span>
-      </a-layout-footer>
     </a-layout>
 
     <!-- 主题配置抽屉 -->
@@ -114,7 +80,6 @@ import {
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import Menu from './components/Menu.vue'
-import Breadcrumb from './components/Breadcrumb.vue'
 import TabsView from './components/TabsView.vue'
 import ThemeDrawer from './components/ThemeDrawer.vue'
 
@@ -134,7 +99,6 @@ const tabsList = computed(() => appStore.tabsList)
 const userInfo = computed(() => userStore.userInfo)
 const isFullscreen = ref(false)
 const themeDrawerVisible = ref(false)
-const currentYear = new Date().getFullYear()
 
 const viewKey = computed(() => {
   const currentPath = router.currentRoute.value.path
@@ -201,7 +165,7 @@ const showThemeDrawer = () => {
     z-index: 100;
 
     .logo {
-      height: 64px;
+      height: 45px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -239,7 +203,7 @@ const showThemeDrawer = () => {
 
     // 菜单根容器 - 设置最大高度和滚动（需要减去底部按钮高度）
     :deep(.ant-menu-root) {
-      max-height: calc(100vh - 64px - 48px);
+      max-height: calc(100vh - 45px - 56px);
       overflow-y: auto;
       overflow-x: hidden;
 
@@ -272,20 +236,23 @@ const showThemeDrawer = () => {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 48px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      padding: 0 8px;
+      gap: 8px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       background: #001529;
 
       .collapse-btn {
-        width: 100%;
+        width: 40px;
+        flex: 0 0 40px;
         height: 100%;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
-        padding-left: 16px;
+        justify-content: center;
+        padding-left: 0;
         cursor: pointer;
         color: rgba(255, 255, 255, 0.65);
         font-size: 16px;
@@ -294,6 +261,50 @@ const showThemeDrawer = () => {
         &:hover {
           color: #fff;
           background: rgba(255, 255, 255, 0.08);
+        }
+      }
+
+      .sider-actions {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        flex: 1;
+        gap: 8px;
+      }
+
+      .sider-action,
+      .sider-user {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+        border-radius: 4px;
+
+        &:hover {
+          color: #fff;
+          background: rgba(255, 255, 255, 0.08);
+        }
+      }
+
+      .sider-action {
+        width: 40px;
+        flex: 0 0 40px;
+        font-size: 16px;
+      }
+
+      .sider-user {
+        flex: 1;
+        gap: 6px;
+        padding: 0 6px;
+        min-width: 0;
+
+        span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 13px;
         }
       }
     }
@@ -404,7 +415,7 @@ const showThemeDrawer = () => {
 
     .content-wrapper {
       flex: 1;
-      padding: 24px;
+      padding: 8px 24px 24px;
       overflow: auto;
     }
   }

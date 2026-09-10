@@ -1,6 +1,6 @@
 <template>
   <div class="task-management">
-    <a-card :bordered="false" class="search-card">
+    <SearchPanel>
       <a-form class="system-search-form" layout="horizontal">
         <div class="search-grid">
           <div class="search-field">
@@ -31,9 +31,9 @@
           </div>
         </div>
       </a-form>
-    </a-card>
+    </SearchPanel>
 
-    <a-card :bordered="false">
+    <a-card :bordered="false" class="system-list-card">
       <div class="table-toolbar">
         <a-tooltip :title="t('common.batchDelete')">
           <a-button v-if="hasPermission('system:task:deleteBatch')" :disabled="!selectedRowKeys.length" @click="handleBatchDelete">
@@ -44,7 +44,7 @@
       </div>
       <a-table
         row-key="tskId"
-        :columns="visibleColumns"
+        :columns="resizableColumns"
         :data-source="dataSource"
         :loading="loading"
         :pagination="pagination"
@@ -70,7 +70,9 @@ import { DeleteTwoTone, MinusCircleTwoTone, ReloadOutlined, SearchOutlined } fro
 import { message, Modal } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
+import SearchPanel from '@/components/SearchPanel/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import { useResizableColumns } from '@/composables/useResizableColumns'
 import { pageTasks, removeTask, removeTasks, type SysTask } from '@/api/system/task'
 
 const { t } = useI18n()
@@ -96,6 +98,7 @@ const columns = computed(() => [
 ])
 const visibleColumnKeys = ref<string[]>(columns.value.map(column => String(column.key ?? column.dataIndex)))
 const visibleColumns = computed(() => columns.value.filter(column => visibleColumnKeys.value.includes(String(column.key ?? column.dataIndex))))
+const { resizableColumns } = useResizableColumns(visibleColumns, 'system-task-column-widths')
 const rowSelection = computed(() => ({ selectedRowKeys: selectedRowKeys.value, onChange: (keys: (string | number)[]) => { selectedRowKeys.value = keys.map(String) } }))
 
 const statusText = (status: string) => ({ '0': t('task.running'), '1': t('task.succeeded'), '2': t('task.failed') }[status] ?? '-')
@@ -121,11 +124,10 @@ fetchTasks()
 </script>
 
 <style lang="scss" scoped>
-.search-card { margin-bottom: 16px; }
-.table-toolbar { margin-bottom: 16px; display: flex; justify-content: space-between; }
+.table-toolbar { margin-bottom: 8px; display: flex; justify-content: space-between; }
 .search-grid { display: grid; grid-template-columns: repeat(3, var(--system-search-field-width)) minmax(140px, 1fr); column-gap: 16px; align-items: start; }
 .search-field:nth-child(4) { grid-area: 2 / 1; }
-.search-actions { display: flex; align-items: flex-start; justify-content: flex-end; grid-area: 2 / 4; padding-bottom: 24px; }
+.search-actions { display: flex; align-items: flex-start; justify-content: flex-end; grid-area: 2 / 4; padding-bottom: 0; }
 .primary-icon { color: var(--app-primary-color); }
 @media (max-width: 767px) { .search-grid { grid-template-columns: minmax(0, 1fr); } .search-field, .search-field:nth-child(n), .search-actions { grid-area: auto; width: 100%; } }
 </style>

@@ -1,6 +1,8 @@
 export default {
   common: {
     search: '查詢',
+    expandSearch: '展開查詢',
+    collapseSearch: '收起查詢',
     reset: '重設',
     add: '新增',
     edit: '編輯',
@@ -36,6 +38,7 @@ export default {
   },
   layout: {
     styleSettings: '整體風格設定',
+    settings: '設定',
     sidebarStyle: '整體風格設定（側邊欄）',
     sidebarStyleDesc: '僅影響左側選單區域：亮色 / 暗色',
     light: '亮色',

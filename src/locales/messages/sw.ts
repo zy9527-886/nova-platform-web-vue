@@ -1,6 +1,8 @@
 export default {
   common: {
     search: 'Tafuta',
+    expandSearch: 'Onyesha vichujio',
+    collapseSearch: 'Ficha vichujio',
     reset: 'Weka upya',
     add: 'Ongeza',
     edit: 'Hariri',
@@ -36,6 +38,7 @@ export default {
   },
   layout: {
     styleSettings: 'Mipangilio ya mwonekano',
+    settings: 'Mipangilio',
     sidebarStyle: 'Mwonekano wa utepe wa pembeni',
     sidebarStyleDesc: 'Hubadilisha utepe wa kushoto pekee: angavu au giza',
     light: 'Angavu',
