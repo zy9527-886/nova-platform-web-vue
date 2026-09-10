@@ -10,6 +10,7 @@ export interface AuthUser {
   userId: string
   userNm: string
   realNm?: string
+  avatar?: string
   rmk?: string
   tel?: string
   orgCd?: string

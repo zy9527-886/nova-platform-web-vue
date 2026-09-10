@@ -65,7 +65,7 @@ const loading = ref(false)
 const avatarUrl = ref(userStore.userInfo?.avatar || '')
 
 const formData = reactive({
-  nickname: userStore.userInfo?.nickname || t('layout.administrator'),
+  nickname: userStore.userInfo?.realNm || userStore.userInfo?.rmk || userStore.userInfo?.userNm || t('layout.administrator'),
   phone: '',
   gender: 'male',
 })

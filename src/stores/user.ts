@@ -15,27 +15,11 @@ import {
 } from '@/utils/auth'
 import { useRouter } from 'vue-router'
 
-export interface UserInfo {
-  id: string
-  username: string
-  nickname: string
-  email?: string
-  avatar?: string
-  roles: string[]
-  permissions: string[]
-}
-
-const toUserInfo = (authUser: AuthUser, permissions: string[] = []): UserInfo => ({
-  id: authUser.userId,
-  username: authUser.userNm,
-  nickname: authUser.realNm || authUser.rmk || authUser.userNm,
-  roles: authUser.roles.map(role => role.rolCd || role.rolId),
-  permissions,
-})
+export type UserInfo = AuthUser
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string>(getToken() || '')
-  const userInfo = ref<UserInfo | null>(getUserInfo() as UserInfo | null)
+  const userInfo = ref<UserInfo | null>(getUserInfo())
   const resources = ref<AuthResources | null>(getAuthResources() as AuthResources | null)
   const menus = ref<AuthMenu[]>(resources.value?.menus ?? [])
   const router = useRouter()
@@ -45,8 +29,8 @@ export const useUserStore = defineStore('user', () => {
     const loginData = res.data
     token.value = loginData.accessToken
     setToken(loginData.accessToken)
-    userInfo.value = toUserInfo(loginData.authUser)
-    setUserInfo(userInfo.value)
+    userInfo.value = loginData.authUser
+    setUserInfo(loginData.authUser)
     await getResourcesAction()
     return res
   }
@@ -56,10 +40,6 @@ export const useUserStore = defineStore('user', () => {
     resources.value = res.data
     menus.value = res.data.menus ?? []
     setAuthResources(res.data)
-    if (userInfo.value) {
-      userInfo.value = { ...userInfo.value, permissions: (res.data.codes ?? []).flatMap(code => code.permCd ? [code.permCd] : []) }
-      setUserInfo(userInfo.value)
-    }
     return res.data
   }
 
@@ -84,7 +64,7 @@ export const useUserStore = defineStore('user', () => {
 
   const initUserInfo = () => {
     if (token.value) {
-      userInfo.value = getUserInfo() as UserInfo | null
+      userInfo.value = getUserInfo()
       resources.value = getAuthResources() as AuthResources | null
       menus.value = resources.value?.menus ?? []
       if (!resources.value) void getResourcesAction()

@@ -1,4 +1,5 @@
 import { Storage } from './storage'
+import type { AuthUser } from '@/api/auth'
 
 const TOKEN_KEY = 'token'
 const USER_INFO_KEY = 'userInfo'
@@ -16,11 +17,11 @@ export const removeToken = (): void => {
   Storage.remove(TOKEN_KEY)
 }
 
-export const getUserInfo = () => {
-  return Storage.get(USER_INFO_KEY)
+export const getUserInfo = (): AuthUser | null => {
+  return Storage.get<AuthUser>(USER_INFO_KEY)
 }
 
-export const setUserInfo = (userInfo: any): void => {
+export const setUserInfo = (userInfo: AuthUser): void => {
   Storage.set(USER_INFO_KEY, userInfo)
 }
 
