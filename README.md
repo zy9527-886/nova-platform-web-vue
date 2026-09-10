@@ -1,6 +1,10 @@
-# Ant Admin - 后台管理系统
+# nova - 后台管理系统
 
 基于 Vue 3 + Vite + TypeScript + Ant Design Vue + Pinia 构建的现代化后台管理系统。
+
+## 后端地址
+
+https://github.com/zy9527-886/nova-platform-cloud
 
 ## 预览
 
