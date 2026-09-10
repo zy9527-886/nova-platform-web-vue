@@ -6,19 +6,15 @@
 
 ### 登录页面
 
-![](.images/Snipaste_2026-03-02_17-02-55.png)
+![](./images/img1.png)
 
 ### 工作台
 
-![](.images/Snipaste_2026-03-02_16-29-50.png)
-
-### 用户管理
-
-![](.images/Snipaste_2026-03-02_17-03-07.png)
+![](./images/img2.png)
 
 ### 个人设置
 
-![](.images/Snipaste_2026-03-02_17-03-15.png)
+![](./images/img3.png)
 
 ## 技术栈
 
