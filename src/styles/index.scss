@@ -223,6 +223,16 @@ body {
               background: rgba(0, 0, 0, 0.04) !important;
             }
           }
+
+          .sider-action,
+          .sider-user {
+            color: rgba(0, 0, 0, 0.65) !important;
+
+            &:hover {
+              color: rgba(0, 0, 0, 0.85) !important;
+              background: rgba(0, 0, 0, 0.04) !important;
+            }
+          }
         }
 
         // Ant Menu 亮色：背景/hover/选中样式
@@ -286,6 +296,16 @@ body {
         .sider-footer {
           background: #001529 !important;
           border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+          .sider-action,
+          .sider-user {
+            color: rgba(255, 255, 255, 0.75) !important;
+
+            &:hover {
+              color: #fff !important;
+              background: rgba(255, 255, 255, 0.08) !important;
+            }
+          }
         }
       }
     }

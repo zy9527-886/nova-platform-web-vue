@@ -290,3 +290,16 @@ test('dark style setting applies to the full application surface', () => {
     /body\.theme-dark\s+\.tabs-view\s*\{[^}]*background:\s*#1f1f1f/,
   )
 })
+
+test('side-footer global and settings controls remain visible in both themes', () => {
+  const styles = readFileSync(new URL('../src/styles/index.scss', import.meta.url), 'utf8')
+
+  assert.match(
+    styles,
+    /&\.theme-light\s*\{[\s\S]*\.sider-footer\s*\{[\s\S]*\.sider-action,\s*\.sider-user\s*\{[\s\S]*color:\s*rgba\(0, 0, 0, 0\.65\) !important/,
+  )
+  assert.match(
+    styles,
+    /&\.theme-dark\s*\{[\s\S]*\.sider-footer\s*\{[\s\S]*\.sider-action,\s*\.sider-user\s*\{[\s\S]*color:\s*rgba\(255, 255, 255, 0\.75\) !important/,
+  )
+})
