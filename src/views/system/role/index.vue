@@ -3,12 +3,13 @@
     <div class="table-toolbar">
       <a-space>
         <a-tooltip :title="t('role.addRole')">
-          <a-button :aria-label="t('role.addRole')" @click="handleAdd">
+          <a-button v-if="hasPermission('system:role:save')" :aria-label="t('role.addRole')" @click="handleAdd">
             <PlusCircleTwoTone two-tone-color="#52c41a" />
           </a-button>
         </a-tooltip>
         <a-tooltip :title="t('common.batchDelete')">
           <a-button
+            v-if="hasPermission('system:role:deleteBatch')"
             :disabled="!selectedRowKeys.length"
             :aria-label="t('common.batchDelete')"
             @click="handleBatchDelete"
@@ -42,6 +43,7 @@
           <a-space>
             <a-tooltip :title="t('common.edit')">
               <a-button
+                v-if="hasPermission('system:role:save')"
                 type="text"
                 size="small"
                 shape="circle"
@@ -53,6 +55,7 @@
             </a-tooltip>
             <a-tooltip :title="t('role.permissions')">
               <a-button
+                v-if="hasPermission('system:role:bindMenus')"
                 type="text"
                 size="small"
                 shape="circle"
@@ -64,6 +67,7 @@
             </a-tooltip>
             <a-tooltip :title="t('common.delete')">
               <a-button
+                v-if="hasPermission('system:role:delete')"
                 type="text"
                 size="small"
                 shape="circle"
@@ -98,11 +102,13 @@ import { useAppStore } from '@/stores/app'
 
 import { getRole, pageRoles, removeRole, removeRoles, type SysRole } from '@/api/system/role'
 import { pageAfterDelete } from '@/views/system/shared/data'
+import { usePermission } from '@/composables/usePermission'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import RoleModal from './components/RoleModal.vue'
 import RolePermissionModal from './components/RolePermissionModal.vue'
 
 const { t } = useI18n()
+const { hasPermission } = usePermission()
 const appStore = useAppStore()
 const primaryColor = computed(() => appStore.primaryColor)
 

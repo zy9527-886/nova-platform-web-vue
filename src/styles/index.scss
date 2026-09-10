@@ -177,17 +177,28 @@ body {
 
   // 暗色主题
   &.theme-dark {
-    // 左黑右白：页面背景与内容区域保持亮色，侧边栏保持深色
-    background-color: #f0f2f5;
-    color: rgba(0, 0, 0, 0.85);
+    background-color: #141414;
+    color: rgba(255, 255, 255, 0.85);
 
     .basic-layout {
+      background: #141414 !important;
+
       .layout-header {
-        background: #fff !important;
+        background: #1f1f1f !important;
+        color: rgba(255, 255, 255, 0.85);
+
+        .username {
+          color: rgba(255, 255, 255, 0.85) !important;
+        }
       }
 
       .layout-content {
-        background: #f0f2f5 !important;
+        background: #141414 !important;
+      }
+
+      .layout-footer {
+        background: #1f1f1f !important;
+        color: rgba(255, 255, 255, 0.65);
       }
 
       // 左侧边栏保持深色（菜单栏黑色）
@@ -208,6 +219,40 @@ body {
           border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
       }
+    }
+
+    .ant-card {
+      background: #1f1f1f !important;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .ant-table-wrapper .ant-table,
+    .ant-table-wrapper .ant-table-container {
+      background: #1f1f1f !important;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .ant-table-wrapper .ant-table-thead > tr > th {
+      background: #262626 !important;
+      color: rgba(255, 255, 255, 0.85) !important;
+      border-bottom-color: #434343 !important;
+    }
+
+    .ant-table-wrapper .ant-table-tbody > tr > td {
+      border-bottom-color: #434343 !important;
+    }
+
+    .ant-tabs-nav,
+    .ant-tabs-content-holder {
+      background: #1f1f1f;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1f1f1f;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #595959;
     }
   }
 

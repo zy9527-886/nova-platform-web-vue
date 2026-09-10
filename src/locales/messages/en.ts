@@ -63,6 +63,7 @@ export default {
     role: 'Role management',
     org: 'Organization management',
     menu: 'Menu management',
+    task: 'Task management',
     settings: 'Personal settings',
     redirect: 'Redirect',
     notFound: '404',
@@ -207,6 +208,11 @@ export default {
     detailFailed: 'Failed to load menu details',
     saveFailed: 'Failed to save menu',
     confirmDelete: 'Delete menu “{name}”?',
+  },
+  task: {
+    type: 'Task type', name: 'Task name', table: 'Task table', date: 'Task date', status: 'Status', createdAt: 'Created at', actions: 'Actions',
+    running: 'Running', succeeded: 'Succeeded', failed: 'Failed', loadFailed: 'Failed to load tasks',
+    confirmDelete: 'Delete task “{name}”?', confirmBatchDelete: 'Delete the {count} selected tasks?',
   },
   settings: {
     basic: 'Basic settings',

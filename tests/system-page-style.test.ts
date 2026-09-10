@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import test from 'node:test'
+import { compileStyle, parse } from '@vue/compiler-sfc'
 import { buildUserQuery } from '../src/views/system/shared/data.ts'
+import zhCN from '../src/locales/messages/zh-CN.ts'
+import zhTW from '../src/locales/messages/zh-TW.ts'
+import en from '../src/locales/messages/en.ts'
+import sw from '../src/locales/messages/sw.ts'
+import { hasPermission } from '../src/utils/permission.ts'
 
 const readView = (name: 'role' | 'menu') =>
   readFileSync(new URL(`../src/views/system/${name}/index.vue`, import.meta.url), 'utf8')
@@ -136,4 +142,68 @@ test('task management provides the user-style query and delete-only list', () =>
 
   assert.ok(existsSync(taskView))
   assert.ok(existsSync(taskApi))
+})
+
+test('task management uses translations for its UI and route title in every supported locale', () => {
+  const taskView = readFileSync(new URL('../src/views/system/task/index.vue', import.meta.url), 'utf8')
+  const router = readFileSync(new URL('../src/router/index.ts', import.meta.url), 'utf8')
+
+  for (const locale of [zhCN, zhTW, en, sw]) {
+    assert.ok(locale.task)
+    assert.equal(typeof locale.route.task, 'string')
+    for (const key of ['type', 'name', 'date', 'status', 'table', 'createdAt', 'actions', 'running', 'succeeded', 'failed', 'loadFailed', 'confirmDelete', 'confirmBatchDelete']) {
+      assert.equal(typeof locale.task[key], 'string')
+    }
+  }
+
+  assert.match(taskView, /const \{ t \} = useI18n\(\)/)
+  for (const key of ['type', 'name', 'date', 'status', 'table', 'createdAt', 'actions', 'running', 'succeeded', 'failed', 'loadFailed', 'confirmDelete', 'confirmBatchDelete']) {
+    assert.match(taskView, new RegExp(`t\\('task\\.${key}'`))
+  }
+  assert.match(router, /path: 'task',[\s\S]*titleKey: 'route\.task'/)
+})
+
+test('system action buttons are gated by resource permission codes', () => {
+  assert.equal(hasPermission({ codes: [{ permCd: 'system:user:save' }] }, 'system:user:save'), true)
+  assert.equal(hasPermission({ codes: [{ permCd: 'system:user:save' }] }, 'system:user:delete'), false)
+  assert.equal(hasPermission(undefined, 'system:user:save'), false)
+
+  for (const [view, codes] of Object.entries({
+    user: ['system:user:page', 'system:user:detail', 'system:user:save', 'system:user:delete', 'system:user:deleteBatch'],
+    role: ['system:role:save', 'system:role:bindMenus', 'system:role:delete', 'system:role:deleteBatch'],
+    menu: ['system:menu:save', 'system:menu:detail', 'system:menu:delete'],
+    org: ['system:org:page', 'system:org:detail', 'system:org:save', 'system:org:delete', 'system:org:deleteBatch'],
+    task: ['system:task:page', 'system:task:delete', 'system:task:deleteBatch'],
+  })) {
+    const source = readFileSync(new URL(`../src/views/system/${view}/index.vue`, import.meta.url), 'utf8')
+    assert.match(source, /usePermission/)
+    for (const code of codes) assert.match(source, new RegExp(`hasPermission\\('${code}'\\)`))
+  }
+})
+
+test('dark style setting applies to the full application surface', () => {
+  const app = readFileSync(new URL('../src/App.vue', import.meta.url), 'utf8')
+  const styles = readFileSync(new URL('../src/styles/index.scss', import.meta.url), 'utf8')
+  const tabs = readFileSync(new URL('../src/layouts/components/TabsView.vue', import.meta.url), 'utf8')
+
+  assert.match(app, /appStore\.theme === 'dark' \? antdTheme\.darkAlgorithm : antdTheme\.defaultAlgorithm/)
+  assert.match(styles, /&\.theme-dark\s*{[\s\S]*\.layout-content\s*{\s*background: #141414 !important/)
+  assert.match(styles, /\.ant-card\s*{\s*background: #1f1f1f !important/)
+  const descriptor = parse(tabs, { filename: 'TabsView.vue' }).descriptor
+  const style = descriptor.styles.at(-1)
+  assert.ok(style)
+
+  const compiled = compileStyle({
+    source: style.content,
+    filename: 'TabsView.vue',
+    id: 'data-v-tabs-test',
+    scoped: style.scoped,
+    preprocessLang: style.lang,
+  })
+
+  assert.equal(compiled.errors.length, 0)
+  assert.match(
+    compiled.code,
+    /body\.theme-dark\s+\.tabs-view\s*\{[^}]*background:\s*#1f1f1f/,
+  )
 })

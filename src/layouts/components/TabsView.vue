@@ -269,6 +269,11 @@ const handleMenuClick = (e: { key: string }, targetPath: string) => {
   }
 }
 
+:global(body.theme-dark .tabs-view) {
+  background: #1f1f1f;
+  border-bottom-color: #303030;
+}
+
 @keyframes tab-refresh-spin {
   from {
     transform: rotate(0deg);

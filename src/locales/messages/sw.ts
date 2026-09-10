@@ -63,6 +63,7 @@ export default {
     role: 'Usimamizi wa majukumu',
     org: 'Usimamizi wa mashirika',
     menu: 'Usimamizi wa menyu',
+    task: 'Usimamizi wa kazi',
     settings: 'Mipangilio binafsi',
     redirect: 'Elekeza upya',
     notFound: '404',
@@ -207,6 +208,11 @@ export default {
     detailFailed: 'Imeshindwa kupakia maelezo ya menyu',
     saveFailed: 'Imeshindwa kuhifadhi menyu',
     confirmDelete: 'Futa menyu “{name}”?',
+  },
+  task: {
+    type: 'Aina ya kazi', name: 'Jina la kazi', table: 'Jedwali la kazi', date: 'Tarehe ya kazi', status: 'Hali', createdAt: 'Imeundwa', actions: 'Vitendo',
+    running: 'Inaendelea', succeeded: 'Imefanikiwa', failed: 'Imeshindwa', loadFailed: 'Imeshindwa kupakia kazi',
+    confirmDelete: 'Futa kazi “{name}”?', confirmBatchDelete: 'Futa kazi {count} zilizochaguliwa?',
   },
   settings: {
     basic: 'Mipangilio ya msingi',

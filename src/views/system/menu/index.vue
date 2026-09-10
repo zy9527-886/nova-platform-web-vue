@@ -3,7 +3,7 @@
     <div class="table-toolbar">
       <a-space>
         <a-tooltip :title="t('menu.addMenu')">
-          <a-button :aria-label="t('menu.addMenu')" @click="handleAdd()">
+          <a-button v-if="hasPermission('system:menu:save')" :aria-label="t('menu.addMenu')" @click="handleAdd()">
             <PlusCircleTwoTone two-tone-color="#52c41a" />
           </a-button>
         </a-tooltip>
@@ -51,8 +51,9 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space>
-            <a-tooltip v-if="record.typ === '1'" :title="t('menu.addChild')">
+            <a-tooltip v-if="record.typ === '1' && hasPermission('system:menu:save')" :title="t('menu.addChild')">
               <a-button
+                v-if="hasPermission('system:menu:detail') && hasPermission('system:menu:save')"
                 type="text"
                 size="small"
                 shape="circle"
@@ -64,6 +65,7 @@
             </a-tooltip>
             <a-tooltip :title="t('common.edit')">
               <a-button
+                v-if="hasPermission('system:menu:delete')"
                 type="text"
                 size="small"
                 shape="circle"
@@ -185,8 +187,10 @@ import { getMenu, listMenus, removeMenu, saveMenu, type SysMenu } from '@/api/me
 import IconPicker from '@/components/IconPicker/index.vue'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import { buildMenuTree, collectDescendantIds } from '@/views/system/shared/data'
+import { usePermission } from '@/composables/usePermission'
 
 const { t } = useI18n()
+const { hasPermission } = usePermission()
 const appStore = useAppStore()
 const primaryColor = computed(() => appStore.primaryColor)
 

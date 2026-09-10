@@ -6,8 +6,12 @@
       </a-button>
     </a-tooltip>
     <template #overlay>
-      <div class="table-column-setting" @click.stop>
-        <div class="table-column-setting__header">
+      <div
+        class="table-column-setting"
+        :style="{ background: token.colorBgElevated, color: token.colorText, boxShadow: token.boxShadowSecondary }"
+        @click.stop
+      >
+        <div class="table-column-setting__header" :style="{ borderBottomColor: token.colorSplit }">
           <a-checkbox :checked="allVisible" :indeterminate="indeterminate" @change="toggleAll">
             {{ t('table.columnDisplay') }}
           </a-checkbox>
@@ -31,6 +35,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { SettingOutlined } from '@ant-design/icons-vue'
+import { theme } from 'ant-design-vue'
 import { useI18n } from 'vue-i18n'
 
 type Column = {
@@ -43,6 +48,7 @@ const props = defineProps<{ columns: Column[] }>()
 
 const visibleKeys = defineModel<string[]>('visibleKeys', { default: () => [] })
 const { t } = useI18n()
+const { token } = theme.useToken()
 
 const getColumnKey = (column: Column) => {
   if (Array.isArray(column.dataIndex)) return column.dataIndex.join('.')
@@ -96,9 +102,7 @@ const reset = () => {
   .table-column-setting {
     width: 240px;
     padding: 8px 0;
-    background: #fff;
     border-radius: 6px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   }
 
   .table-column-setting__header {
@@ -106,7 +110,7 @@ const reset = () => {
     align-items: center;
     justify-content: space-between;
     padding: 0 12px 8px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid;
   }
 
   .table-column-setting__list {

@@ -75,6 +75,7 @@
             <a-space>
               <a-tooltip :title="t('common.search')">
                 <a-button
+                  v-if="hasPermission('system:user:page')"
                   type="primary"
                   :aria-label="t('common.search')"
                   :icon="h(SearchOutlined)"
@@ -98,12 +99,13 @@
       <div class="table-toolbar">
         <a-space>
           <a-tooltip :title="t('user.addUser')">
-            <a-button :aria-label="t('user.addUser')" @click="handleAdd">
+          <a-button v-if="hasPermission('system:user:save')" :aria-label="t('user.addUser')" @click="handleAdd">
               <PlusCircleTwoTone two-tone-color="#52c41a" />
             </a-button>
           </a-tooltip>
           <a-tooltip :title="t('common.batchDelete')">
             <a-button
+              v-if="hasPermission('system:user:deleteBatch')"
               :disabled="!selectedRowKeys.length"
               :aria-label="t('common.batchDelete')"
               @click="handleBatchDelete"
@@ -148,6 +150,7 @@
             <a-space>
               <a-tooltip :title="t('user.detail')">
                 <a-button
+                  v-if="hasPermission('system:user:detail')"
                   type="text"
                   size="small"
                   shape="circle"
@@ -159,6 +162,7 @@
               </a-tooltip>
               <a-tooltip :title="t('common.edit')">
                 <a-button
+                  v-if="hasPermission('system:user:save')"
                   type="text"
                   size="small"
                   shape="circle"
@@ -170,6 +174,7 @@
               </a-tooltip>
               <a-tooltip :title="t('common.delete')">
                 <a-button
+                  v-if="hasPermission('system:user:delete')"
                   type="text"
                   size="small"
                   shape="circle"
@@ -213,10 +218,12 @@ import { useAppStore } from '@/stores/app'
 import { listRoles } from '@/api/system/role'
 import { getUser, pageUsers, removeUser, removeUsers, type SysUser } from '@/api/system/user'
 import { buildUserQuery, pageAfterDelete } from '@/views/system/shared/data'
+import { usePermission } from '@/composables/usePermission'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import UserModal from './components/UserModal.vue'
 
 const { t } = useI18n()
+const { hasPermission } = usePermission()
 const appStore = useAppStore()
 const primaryColor = computed(() => appStore.primaryColor)
 

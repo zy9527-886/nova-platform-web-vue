@@ -63,6 +63,7 @@ export default {
     role: '角色管理',
     org: '组织机构管理',
     menu: '菜单管理',
+    task: '任务管理',
     settings: '个人设置',
     redirect: '重定向',
     notFound: '404',
@@ -207,6 +208,11 @@ export default {
     detailFailed: '获取菜单详情失败',
     saveFailed: '保存菜单失败',
     confirmDelete: '确定要删除菜单“{name}”吗？',
+  },
+  task: {
+    type: '任务类型', name: '任务名称', table: '任务表名', date: '任务日期', status: '状态', createdAt: '创建时间', actions: '操作',
+    running: '执行中', succeeded: '成功', failed: '失败', loadFailed: '获取任务列表失败',
+    confirmDelete: '确定要删除任务“{name}”吗？', confirmBatchDelete: '确定要删除选中的 {count} 条任务吗？',
   },
   settings: {
     basic: '基础设置',

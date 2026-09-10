@@ -14,8 +14,7 @@ const appStore = useAppStore()
 const antdLocale = computed(() => getAntdLocale(appStore.locale))
 
 const themeConfig = computed(() => ({
-  // 只使用 Ant Design 默认算法，不再区分暗黑模式
-  algorithm: antdTheme.defaultAlgorithm,
+  algorithm: appStore.theme === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
   token: {
     colorPrimary: appStore.primaryColor,
   },

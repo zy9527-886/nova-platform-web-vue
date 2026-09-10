@@ -75,6 +75,7 @@
               <a-space>
                 <a-tooltip :title="t('common.search')">
                   <a-button
+                    v-if="hasPermission('system:org:page')"
                     type="primary"
                     :icon="h(SearchOutlined)"
                     :aria-label="t('common.search')"
@@ -98,12 +99,13 @@
         <div class="table-toolbar">
           <a-space>
             <a-tooltip :title="t('org.addOrg')">
-              <a-button :aria-label="t('org.addOrg')" @click="handleAdd">
+              <a-button v-if="hasPermission('system:org:save')" :aria-label="t('org.addOrg')" @click="handleAdd">
                 <PlusCircleTwoTone two-tone-color="#52c41a" />
               </a-button>
             </a-tooltip>
             <a-tooltip :title="t('common.batchDelete')">
               <a-button
+                v-if="hasPermission('system:org:deleteBatch')"
                 :disabled="!selectedRowKeys.length"
                 :aria-label="t('common.batchDelete')"
                 @click="handleBatchDelete"
@@ -137,6 +139,7 @@
               <a-space>
                 <a-tooltip :title="t('common.detail')">
                   <a-button
+v-if="hasPermission('system:org:detail')"
 type="text"
 size="small"
 shape="circle"
@@ -147,6 +150,7 @@ shape="circle"
                 </a-tooltip>
                 <a-tooltip :title="t('common.edit')">
                   <a-button
+v-if="hasPermission('system:org:save')"
 type="text"
 size="small"
 shape="circle"
@@ -157,6 +161,7 @@ shape="circle"
                 </a-tooltip>
                 <a-tooltip :title="t('common.delete')">
                   <a-button
+v-if="hasPermission('system:org:delete')"
 type="text"
 size="small"
 shape="circle"
@@ -206,10 +211,12 @@ import {
   type SysOrgTree,
 } from '@/api/system/org'
 import { pageAfterDelete } from '@/views/system/shared/data'
+import { usePermission } from '@/composables/usePermission'
 import TableColumnSetting from '@/components/TableColumnSetting/index.vue'
 import OrgModal from './components/OrgModal.vue'
 
 const { t } = useI18n()
+const { hasPermission } = usePermission()
 const appStore = useAppStore()
 const primaryColor = computed(() => appStore.primaryColor)
 const loading = ref(false)

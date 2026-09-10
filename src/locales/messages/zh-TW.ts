@@ -63,6 +63,7 @@ export default {
     role: '角色管理',
     org: '組織機構管理',
     menu: '選單管理',
+    task: '任務管理',
     settings: '個人設定',
     redirect: '重新導向',
     notFound: '404',
@@ -207,6 +208,11 @@ export default {
     detailFailed: '取得選單詳情失敗',
     saveFailed: '儲存選單失敗',
     confirmDelete: '確定要刪除選單「{name}」嗎？',
+  },
+  task: {
+    type: '任務類型', name: '任務名稱', table: '任務資料表', date: '任務日期', status: '狀態', createdAt: '建立時間', actions: '操作',
+    running: '執行中', succeeded: '成功', failed: '失敗', loadFailed: '取得任務列表失敗',
+    confirmDelete: '確定要刪除任務「{name}」嗎？', confirmBatchDelete: '確定要刪除選取的 {count} 筆任務嗎？',
   },
   settings: {
     basic: '基本設定',
